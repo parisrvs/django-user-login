@@ -486,7 +486,6 @@ def editUser(request):
     first_name = first_name.strip().lower().title()
     last_name = last_name.strip().lower().title()
     mobile = mobile.strip()
-
     
     if not util.validate_username(username):
         return JsonResponse({"success": False, "message": "Invalid Username"})
@@ -929,8 +928,8 @@ def editEmailResendCode(request):
     
     code = str(random.randint(100000, 999999))
     if settings.AUTHENTICATION_DEBUG:
-        new_email = request.sesson["editEmail"]["new_email"]
-        current_email = request.sesson["editEmail"]["old_email"]
+        new_email = request.session["editEmail"]["new_email"]
+        current_email = request.session["editEmail"]["old_email"]
         print(f"Username: {request.user.username} - Current Email: {current_email} - New Email: {new_email} - Code: {code}")
     else:
         try:

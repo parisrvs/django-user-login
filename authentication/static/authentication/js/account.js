@@ -376,7 +376,6 @@ function editEmailAddress(event, email, user_id, person_id) {
         const res = JSON.parse(request.responseText);
         if (res.success) {
             enable_buttons();
-            prevent_default = false;
             document.querySelector("#editEmailModalCloseButton").click();
             displayEditEmailVerifyModal(new_email, user_id, person_id);
         } else {
@@ -445,7 +444,6 @@ function editEmailVerifyCodeResend(event, user_id, person_id, new_email) {
         const res = JSON.parse(request.responseText);
         if (res.success) {
             enable_buttons();
-            prevent_default = false;
             document.querySelector("#editEmailVerifyError").innerHTML = "A new verification code is sent to your email address.";
             document.getElementById('editEmailVerifyCode').focus();
         } else {
