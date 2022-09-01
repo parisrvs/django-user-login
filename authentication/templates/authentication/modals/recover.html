@@ -1,0 +1,51 @@
+<div style="display: none;">
+    <!-- Button trigger Recover modal -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#recoverModal" id="displayRevoverModal">
+        Recover
+    </button>
+
+    <!-- Button trigger recover verification modal -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#recoverVerificationModal" id="recoverVerificationModalButton">
+        recover Verify
+    </button>
+
+    <!-- Button trigger change password modal -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#changePasswordModal" id="changePasswordModalButton">
+        change password
+    </button>
+
+    <!-- Button trigger recover Success modal -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#recoverSuccessModal" id="recoverSuccessModalButton">
+        Recover Success
+    </button>
+</div>
+
+<!-- Recover Modal -->
+<div class="modal fade" id="recoverModal" data-bs-backdrop="static" data-bs-keyboard="false"  tabindex="-1" aria-labelledby="recoverModalLabel" aria-hidden="true"></div>
+
+
+<!-- recover verification Modal -->
+<div class="modal fade" id="recoverVerificationModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="recoverVerificationModalLabel" aria-hidden="true"></div>
+
+
+<!-- change password Modal -->
+<div class="modal fade" id="changePasswordModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true"></div>
+
+
+<!-- Change Password Success Modal -->
+<div class="modal fade" id="recoverSuccessModal" tabindex="-1" aria-labelledby="recoverSuccessModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="recoverSuccessModalLabel">Account Recovery Successful</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body text-center">
+            You have successfully changed your password.
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-transparent-dark btn-sm" data-bs-dismiss="modal">Close</button>
+        </div>
+        </div>
+    </div>
+</div>

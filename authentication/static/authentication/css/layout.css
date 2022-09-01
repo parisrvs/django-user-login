@@ -1,0 +1,39 @@
+body {
+  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+  margin-top: 100px;
+}
+
+.requirement, .errormessage {
+  color: red;
+}
+
+#navbarSupportedContent ul li a {
+  color: #212529;
+  text-decoration: none;
+}
+#navbarSupportedContent ul li a:hover {
+  color: #212529;
+  text-decoration: underline;
+}
+
+.btn-transparent-dark {
+  border-color: #212529;
+  color: #fff;
+  background-color: #212529;
+}
+.btn-transparent-dark:hover {
+  color: #212529;
+  border-color: #212529;
+  background-color: #fff;
+}
+
+.link-dark {
+  color: #212529;
+  text-decoration: none;
+}
+.link-dark:hover {
+  color: #212529;
+  text-decoration: underline;
+}
+
+/*# sourceMappingURL=layout.css.map */

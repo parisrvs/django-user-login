@@ -1,0 +1,16 @@
+{% extends 'authentication/layout.html' %}
+{% load static %}
+
+{% block title %}My Account{% endblock %}
+{% block style %}{% endblock %}
+
+
+{% block body %}
+{% include 'authentication/modals/account.html' %}
+<div class="container my-5" id="userdetails"></div>
+{% endblock %}
+
+
+{% block script %}
+{% include 'authentication/handlebars/account.html' %}
+{% endblock %}

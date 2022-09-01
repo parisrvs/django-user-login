@@ -1,0 +1,6 @@
+include LICENSE
+include README.md
+recursive-include authentication/static *
+recursive-include authentication/templates *
+recursive-include docs *
+global-exclude *.py[cod]

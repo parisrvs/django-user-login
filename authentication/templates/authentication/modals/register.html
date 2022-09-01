@@ -1,0 +1,50 @@
+<div style="display: none;">
+    <!-- Button trigger register modal -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#registerModal" id="displayRegisterModalButton">
+        Register
+    </button>
+
+    <!-- Button trigger register verification modal -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#registerVerificationModal" id="registerVerificationModalButton">
+        Register Verify
+    </button>
+
+     <!-- Button trigger register Success modal -->
+     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#registerSuccessModal" id="registerSuccessModalButton">
+        Register Success
+    </button>
+
+    <!-- Button trigger register Unsuccess modal -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#registerUnsuccessModal" id="registerUnsuccessModalButton">
+        Register Success
+    </button>
+</div>
+
+
+<!-- Register Modal -->
+<div class="modal fade" id="registerModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true"></div>
+
+<!-- Register verification Modal -->
+<div class="modal fade" id="registerVerificationModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="registerVerificationModalLabel" aria-hidden="true"></div>
+
+<!-- Register Success Modal -->
+<div class="modal fade" id="registerSuccessModal" tabindex="-1" aria-labelledby="registerSuccessModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="registerSuccessModalLabel">Registration Successful</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body text-center">
+            You have successfully registered your account.
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-transparent-dark btn-sm" data-bs-dismiss="modal">Close</button>
+        </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Register Unsuccessful Modal -->
+<div class="modal fade" id="registerUnsuccessModal" tabindex="-1" aria-labelledby="registerUnsuccessModalLabel" aria-hidden="true"></div>

@@ -1,0 +1,110 @@
+{% load static %}
+<script src="{% static 'authentication/js/recover.js' %}"></script>
+
+<!-- Recover Modal -->
+<script id="recoverFormHandlebars" type="text/x-handlebars-template">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="recoverModalLabel">Recover Password</h5>
+            <button type="button" class="btn-close toDisable" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body text-center">
+            <form id="recoverForm" onsubmit="recover(event);">
+                <div class="mb-1">
+                    <label for="recoverEmail" class="form-label"><span class="requirement">*</span>Email or Username</label>
+                    <input type="text" class="form-control toDisable" id="recoverEmail" placeholder="email or username">
+                </div>
+            </form>
+            <div class="errormessage" id="recoverError"></div>
+        </div>
+        <div class="modal-footer">
+            <div class="btn-group me-auto btn-group-sm w-25" role="group" aria-label="First group">
+                <button type="button" class="btn btn-transparent-dark w-100 toDisable" onclick="displayRegisterModal(event);">Register</button>
+            </div>
+            <div class="btn-group my-auto btn-group-sm w-25" role="group" aria-label="Second group">
+                <button type="button" class="btn btn-transparent-dark w-100 toDisable" data-bs-dismiss="modal" id="recoverModalCloseButton">Close</button>
+            </div>
+            <div class="btn-group ms-auto btn-group-sm w-25" role="group" aria-label="Third group">
+                <button type="submit" form="recoverForm" class="btn btn-transparent-dark toDisable w-100">
+                    Continue
+                    <span class="spinner-border spinner-border-sm text-dark" role="status" aria-hidden="true" hidden></span>
+                </button>
+            </div>
+        </div>
+        </div>
+    </div>
+</script>
+
+<script id="recoverVerifyHandlebars" type="text/x-handlebars-template">
+    {% verbatim %}
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="recoverVerificationModalLabel">Verify</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" disabled id="recoverVerificationModalCloseButton"></button>
+        </div>
+        <div class="modal-body text-center">
+            <h6>Verify - {{data}}</h6>
+            <form id="recoverVerifyForm" onsubmit="recoverVerify(event);">
+                <div class="mb-1">
+                    <label for="recoverVerifyCode" class="form-label"><span class="requirement">*</span>Verification Code</label>
+                    <input type="text" class="form-control toDisable" id="recoverVerifyCode" placeholder="123456" aria-describedby="recoverVerifyHelp">
+                    <div id="recoverVerifyHelp" class="form-text">Check your Inbox/Spam folder for a Verification Code</div>
+                </div>
+            </form>
+            <a href="" class="toDisableAnchorTag link-dark" onclick="recoverVerifyCodeResend(event);">Resend Verification Code</a>
+            <div class="errormessage" id="recoverVerifyError"></div>
+        </div>
+        <div class="modal-footer">
+            <div class="btn-group me-auto btn-group-sm w-25" role="group" aria-label="First group">
+                <button type="button" class="btn btn-transparent-dark toDisable w-100" data-bs-dismiss="modal" onclick="cancelrecoverVerify();">Cancel</button>
+            </div>
+            <div class="btn-group ms-auto btn-group-sm w-25" role="group" aria-label="Third group">
+                <button type="submit" form="recoverVerifyForm" class="btn btn-transparent-dark toDisable w-100">
+                    Verify
+                    <span class="spinner-border spinner-border-sm text-dark" role="status" aria-hidden="true" hidden></span>
+                </button>
+            </div>
+        </div>
+        </div>
+    </div>
+    {% endverbatim %}
+</script>
+
+<script id="changePasswordHandlebars" type="text/x-handlebars-template">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="changePasswordModalLabel">Change Password</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" disabled aria-label="Close" id="changePasswordModalCloseButton"></button>
+        </div>
+        <div class="modal-body text-center">
+            <form id="changePasswordForm" onsubmit="changepassword(event);">
+                <div class="mb-1">
+                    <label for="recoverChangePassword" class="form-label"><span class="requirement">*</span>Password</label>
+                    <input type="password" class="form-control toDisable" id="recoverChangePassword" aria-describedby="changePasswordHelp">
+                    <div id="changePasswordHelp" class="form-text">8 to 20 characters long</div>
+                </div>
+                <div class="mb-1">
+                    <label for="recoverChangePassword1" class="form-label"><span class="requirement">*</span>Confirm Password</label>
+                    <input type="password" class="form-control toDisable" id="recoverChangePassword1" aria-describedby="changePasswordHelp1">
+                    <div id="changePasswordHelp1" class="form-text">include an alphabet, a number, and a special character</div>
+                </div>
+            </form>
+            <div class="errormessage" id="changePasswordError"></div>
+        </div>
+        <div class="modal-footer">
+            <div class="btn-group me-auto btn-group-sm w-25" role="group" aria-label="First group">
+                <button type="button" class="btn btn-transparent-dark toDisable w-100" data-bs-dismiss="modal" onclick="cancelrecoverVerify();">Cancel</button>
+            </div>
+            <div class="btn-group ms-auto btn-group-sm w-25" role="group" aria-label="Third group">
+                <button type="submit" form="changePasswordForm" class="btn btn-transparent-dark toDisable w-100">
+                    Update
+                    <span class="spinner-border spinner-border-sm text-dark" role="status" aria-hidden="true" hidden></span>
+                </button>
+            </div>
+        </div>
+        </div>
+    </div>
+</script>
