@@ -399,3 +399,33 @@
     </div>
     {% endverbatim %}
 </script>
+
+
+
+<script id="closeAccountHandlebars" type="text/x-handlebars-template">
+    {% verbatim %}
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="accountCloseModalLabel">Close Account</h5>
+            <button type="button" class="btn-close toDisable" data-bs-dismiss="modal" aria-label="Close" id="accountCloseModalButton"></button>
+        </div>
+        <div class="modal-body text-center">
+            <span class="text-danger fs-4">Are you sure you want to close your account?</span>
+            <div class="errormessage" id="closeAccountError"></div>
+        </div>
+        <div class="modal-footer">
+            <div class="btn-group me-auto btn-group-sm w-25" role="group" aria-label="First group">
+                <button type="button" class="btn btn-transparent-dark toDisable w-100" data-bs-dismiss="modal">Cancel</button>
+            </div>
+            <div class="btn-group ms-auto btn-group-sm w-25" role="group" aria-label="Second group">
+                <button type="button" class="btn btn-transparent-dark toDisable w-100" onclick="deleteAccount('{{user_id}}');">
+                    Confirm
+                    <span class="spinner-border spinner-border-sm text-dark" role="status" aria-hidden="true" hidden></span>
+                </button>
+            </div>
+        </div>
+        </div>
+    </div>
+    {% endverbatim %}
+</script>

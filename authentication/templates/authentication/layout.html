@@ -30,7 +30,7 @@
                             <a class="nav-link toDisableAnchorTag" href="" onclick="displayUpdatePasswordModal(event, '{{request.user.id}}');">Change Password</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link toDisableAnchorTag" href="#">Close Account</a>
+                            <a class="nav-link toDisableAnchorTag" href="" onclick="displayCloseAccountModal(event, '{{request.user.id}}')">Close Account</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link toDisableAnchorTag" href="{% url 'authentication:logout' %}">Logout</a>

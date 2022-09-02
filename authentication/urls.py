@@ -19,6 +19,7 @@ urlpatterns = [
     path('recover/verify/changepassword/', views.verifyChangePassword),
 
     path('account/', views.account, name='account'),
+    path('account/close/', views.closeAccount),
     path('account/editUser/', views.editUser),
     path('account/getUser/', views.getUser),
     path('account/addAddress/', views.addAddress),

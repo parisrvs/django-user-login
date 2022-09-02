@@ -614,3 +614,42 @@ function makeAddressPrimary(event, address_id ,user_id, person_id) {
     return false;
 }
 
+
+function displayCloseAccountModal(event, user_id) {
+    event.preventDefault();
+
+    const details_template = Handlebars.compile(document.querySelector('#closeAccountHandlebars').innerHTML);
+    const details = details_template({"user_id": user_id});
+    document.querySelector("#accountCloseModal").innerHTML = details;
+    document.querySelector("#closeAccountModalButton").click();
+    return;
+}
+
+
+function deleteAccount(user_id) {
+    const csrftoken = getCookie('csrftoken');
+    const request = new XMLHttpRequest();
+    request.open('POST', '/authentication/account/close/');
+    request.setRequestHeader("X-CSRFToken", csrftoken);
+
+    disable_buttons();
+    prevent_default = true;
+    request.onload = () => {
+        const res = JSON.parse(request.responseText);
+        if (res.success) {
+            enable_buttons();
+            prevent_default = false;
+            document.querySelector("#accountCloseModalButton").click();
+            location.reload();
+        } else {
+            enable_buttons();
+            prevent_default = false;
+            document.querySelector("#closeAccountError").innerHTML = res.message;
+        }
+    };
+
+    const data = new FormData();
+    data.append('user_id', user_id);
+    request.send(data);
+    return false;
+}

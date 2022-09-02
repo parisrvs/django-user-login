@@ -193,22 +193,32 @@ def verifyregistration(request):
             "restart": True
         })
     
-    user = User.objects.create_user(
-        request.session["register"]["username"],
-        request.session["register"]["email"],
-        request.session["register"]["password"]
-    )
-    user.first_name = request.session["register"]["first_name"]
-    user.last_name = request.session["register"]["last_name"]
-    user.save()
+    try:
+        user = User.objects.create_user(
+            request.session["register"]["username"],
+            request.session["register"]["email"],
+            request.session["register"]["password"]
+        )
+        user.first_name = request.session["register"]["first_name"]
+        user.last_name = request.session["register"]["last_name"]
+        user.save()
 
-    person = Person.objects.create(
-        user=user,
-        first_name=user.first_name,
-        last_name=user.last_name,
-        email=user.email,
-        username=user.username
-    )
+        person = Person.objects.create(
+            user=user,
+            first_name=user.first_name,
+            last_name=user.last_name,
+            email=user.email,
+            username=user.username
+        )
+    except:
+        request.session["register"].clear()
+        request.session.pop("register", False)
+        return JsonResponse({
+            "success": False,
+            "message": "Something went wrong. Please try again later.",
+            "restart": True
+        })
+
     
     request.session["register"].clear()
     request.session.pop("register", False)
@@ -240,7 +250,7 @@ def recover(request):
     
     username = username.strip()
     user = User.objects.filter(Q(username=username) | Q(email=username)).first()
-    if not user:
+    if not user or not user.is_active:
         return JsonResponse({"success": False, "message": "Invalid Credentials"})
     
     email = user.email
@@ -994,7 +1004,13 @@ def editEmailVerify(request):
     
     old_email = user.email
     person.email = new_email
-    person.save()
+    try:
+        person.save()
+    except:
+        request.session["editEmail"].clear()
+        request.session.pop("editEmail", False)
+        return JsonResponse({"success": False, "message": "Something went wrong. Please try again later."})
+
     if not settings.AUTHENTICATION_DEBUG:
         try:
             send_mail(
@@ -1062,4 +1078,32 @@ def updatepassword(request):
             )
         except:
             pass
+    return JsonResponse({"success": True})
+
+
+@login_required
+def closeAccount(request):
+    if not request.user.is_authenticated or request.user.is_superuser or request.user.is_staff or request.method == "GET":
+        return JsonResponse({"success": False, "message": "Invalid Request"})
+    
+    user_id = request.POST["user_id"]
+    if not user_id:
+        return JsonResponse({"success": False, "message": "Invalid Request"})
+    
+    try:
+        user_id = int(user_id)
+    except ValueError:
+        return JsonResponse({"success": False, "message": "Invalid Request"})
+    
+    try:
+        user = User.objects.get(id=user_id)
+    except:
+        return JsonResponse({"success": False, "message": "Invalid Request"})
+    
+    if user != request.user:
+        return JsonResponse({"success": False, "message": "Invalid Request"})
+    
+    user.is_active = False
+    user.save()
+    logout(request)
     return JsonResponse({"success": True})

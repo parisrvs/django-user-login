@@ -14,13 +14,13 @@ Instructions
             'authentication',
         ]
 
-### 03.	The App requires [Django Sessions](https://docs.djangoproject.com/en/4.0/topics/http/sessions/#enabling-sessions)
-
-### 04.	Include the authentication URLconf in your project urls.py like this:
+### 03.	Include the authentication URLconf in your project urls.py like this:
 
 	path('authentication/', include('authentication.urls')),
 
-### 05.	Run `python manage.py makemigrations && python manage.py migrate` to create the User models (you'll need the Admin app enabled).
+### 04.	Run `python manage.py migrate` to create the `User`, `Person` and `Address` models (you'll need the Admin app enabled).
+
+### 05.	The App requires [Django Sessions](https://docs.djangoproject.com/en/4.0/topics/http/sessions/#enabling-sessions)
 
 ### 06.  In your settings.py file include the following:
 
@@ -34,12 +34,12 @@ Instructions
         AUTHENTICATION_DEBUG=False
 
 ### 07.  For login and logout functionality, use - 
-- #### To Login, use anyone of these
+- #### To Login, use anyone one of these
 
                 - <a href="{% url 'authentication:homepage' %}">Login</a>
                 - <a href='/authentication/'>Login</a>
 
-- #### To Logout, use anyone of these
+- #### To Logout, use anyone one of these
 
                 - <a href="{% url 'authentication:logout' %}">Logout</a>
                 - <a href="/authentication/logout/">Logout</a>
@@ -51,12 +51,10 @@ Instructions
 
 ### 08. When `AUTHENTICATION_DEBUG = TRUE`
 
-        - Live EMAILS will not be sent and verification codes, if any, will be printed on the console.
+        - Live EMAILS will not be sent and verification codes, if any, will be displayed in the console.
         - No password validation will happen.
 
-### 09. Check [Demo Website](https://django-user-login.herokuapp.com/)
-
-### 10. This authentication app creates two models - `Person` and `Address`
+### 09. This authentication app creates two models - `Person` and `Address`
 
         class Person(models.Model):
         MALE = 'M'
@@ -107,7 +105,6 @@ Instructions
                 ordering = ['first_name', 'last_name']
                 verbose_name_plural = "Address Entries"
 
+### 10. When a user closes their account, the app will not delete the User account but set `is_active` to `False` in [User Model](https://docs.djangoproject.com/en/4.1/ref/contrib/auth/#django.contrib.auth.models.User.is_active)
 
-
-
-
+### 11. Check [Demo Website](https://django-user-login.herokuapp.com/)
