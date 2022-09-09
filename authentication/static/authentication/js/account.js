@@ -316,7 +316,10 @@ function deleteAddress(event, address_id, user_id, person_id) {
                 enable_buttons();
                 s.hidden = true;
                 prevent_default = false;
-                alert(res.message);
+                if (res.reverse_url)
+                    window.location.replace(res.reverse_url);
+                else
+                    alert(res.message);
             }
         };
 

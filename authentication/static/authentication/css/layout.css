@@ -16,6 +16,14 @@ body {
   text-decoration: underline;
 }
 
+.error {
+  color: red;
+}
+
+.success {
+  color: green;
+}
+
 .btn-transparent-dark {
   border-color: #212529;
   color: #fff;

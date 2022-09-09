@@ -8,6 +8,7 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.core.mail import send_mail
 from django.db.models import Q
 import random
@@ -791,7 +792,8 @@ def deleteAddress(request):
     try:
         addr.delete()
     except:
-        return JsonResponse({"success": False, "message": "Protected Table"})
+        messages.add_message(request, messages.ERROR, "This address is associated with some other service.")
+        return JsonResponse({"success": False, "message": "Protected Table", "reverse_url": reverse("authentication:account")})
     else:
         return JsonResponse({"success": True})
 
