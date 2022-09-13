@@ -193,7 +193,7 @@ function changepassword(event) {
             document.querySelector("#changePasswordModalCloseButton").disabled = true;
             document.querySelector("#recoverSuccessModalButton").click();
         } else {
-            enable_buttons();
+            enable();
             document.getElementById('recoverChangePassword').focus();
             document.querySelector("#changePasswordError").innerHTML = res.message;
         }

@@ -102,7 +102,9 @@ def register(request):
     first_name = first_name.strip().lower().title()
     last_name = last_name.strip().lower().title()
     
-    if not settings.AUTHENTICATION_DEBUG and not util.validate_password(password):
+    if len(first_name) > 150 or len(last_name) > 150:
+        return JsonResponse({"success": False, "message": "First / Last name too long."})
+    if not util.validate_password(password):
         return JsonResponse({"success": False, "message": "Invalid Password"})
     if not util.validate_email(email):
         return JsonResponse({"success": False, "message": "Invalid Email Address"})
@@ -375,8 +377,7 @@ def verifyChangePassword(request):
         return JsonResponse({"success": False, "message": "Incomplete Form"})
     if password1 != password2:
         return JsonResponse({"success": False, "message": "Passwords Don't Match"})
-    
-    if not settings.AUTHENTICATION_DEBUG and not util.validate_password(password1):
+    if not util.validate_password(password1):
         return JsonResponse({"success": False, "message": "Invalid Password"})
     
     try:
@@ -462,8 +463,14 @@ def editDetails(request):
     if not first_name or not last_name or not username or not user_id:
         return JsonResponse({"success": False, "message": "Incomplete Form"})
     
+    username = username.strip().lower()
+    first_name = first_name.strip().lower().title()
+    last_name = last_name.strip().lower().title()
     if not util.validate_username(username):
         return JsonResponse({"success": False, "message": "Invalid Username"})
+    
+    if len(first_name) > 150 or len(last_name) > 150:
+        return JsonResponse({"success": False, "message": "First / Last name too long."})
     
     try:
         user_id = int(user_id)
@@ -474,12 +481,11 @@ def editDetails(request):
     if user != request.user:
         return JsonResponse({"success": False, "message": "Invalid Request"})
     
-    username = username.strip().lower()
     if username != user.username and User.objects.filter(username=username).exists():
         return JsonResponse({"success": False, "message": "Username already exists. Please try a different username."})
     
-    user.first_name = first_name.strip().lower().title()
-    user.last_name = last_name.strip().lower().title()
+    user.first_name = first_name
+    user.last_name = last_name
     user.username = username
 
     try:
@@ -687,8 +693,7 @@ def changepassword(request):
     
     if new_password_1 != new_password_2:
         return JsonResponse({"success": False, "message": "New passwords don't match."})
-    
-    if not settings.AUTHENTICATION_DEBUG and not util.validate_password(new_password_2):
+    if not util.validate_password(new_password_2):
         return JsonResponse({"success": False, "message": "Invalid Password"})
 
     try:

@@ -42,11 +42,13 @@
                     <form class="row g-3" onsubmit="editDetails(event, '{{id}}');" id="editDetailsForm">
                         <div class="col-md-6">
                             <label for="editAccountDetailsFormInputFirstName" class="form-label"><span class="requirement">*</span>First Name</label>
-                            <input type="text" class="form-control disableButton" id="editAccountDetailsFormInputFirstName" placeholder="First Name" value="{{first_name}}">
+                            <input type="text" class="form-control disableButton" id="editAccountDetailsFormInputFirstName" placeholder="First Name" value="{{first_name}}" aria-describedby="FormInputFirstNameHelp">
+                            <div id="FormInputFirstNameHelp" class="form-text">150 characters or fewer.</div>
                         </div>
                         <div class="col-md-6">
                             <label for="editAccountDetailsFormInputLastName" class="form-label"><span class="requirement">*</span>Last Name</label>
-                            <input type="text" class="form-control disableButton" id="editAccountDetailsFormInputLastName" placeholder="Last Name" value="{{last_name}}">
+                            <input type="text" class="form-control disableButton" id="editAccountDetailsFormInputLastName" placeholder="Last Name" value="{{last_name}}" aria-describedby="FormInputLastNameHelp">
+                            <div id="FormInputLastNameHelp" class="form-text">150 characters or fewer.</div>
                         </div>
                         <div class="col-md-6">
                             <label for="editAccountDetailsFormInputEmail" class="form-label">Email</label>
@@ -122,7 +124,7 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="editEmailVerificationModalLabel">Verify</h5>
+                    <h5 class="modal-title" id="editEmailVerificationModalLabel">Verify your new Email Address</h5>
                     <button type="button" class="btn-close" disabled data-bs-dismiss="modal" aria-label="Close" id="editEmailVerificationModalCloseBtn"></button>
                 </div>
                 <div class="modal-body text-center">

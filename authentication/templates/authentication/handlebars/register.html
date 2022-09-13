@@ -11,15 +11,18 @@
                     <form class="row g-3" id="registerForm" onsubmit="register(event);">
                         <div class="col-sm-6">
                             <label for="registerFormInputFirstName" class="form-label"><span class="requirement">*</span>First Name</label>
-                            <input type="text" class="form-control disableButton" id="registerFormInputFirstName" placeholder="First Name">
+                            <input type="text" class="form-control disableButton" id="registerFormInputFirstName" placeholder="First Name" aria-describedby="registerFormInputFirstNameHelp">
+                            <div id="registerFormInputFirstNameHelp" class="form-text">150 characters or fewer.</div>
                         </div>
                         <div class="col-sm-6">
                             <label for="registerFormInputLastName" class="form-label"><span class="requirement">*</span>Last Name</label>
-                            <input type="text" class="form-control disableButton" id="registerFormInputLastName" placeholder="Last Name">
+                            <input type="text" class="form-control disableButton" id="registerFormInputLastName" placeholder="Last Name" aria-describedby="registerFormInputLastNameHelp">
+                            <div id="registerFormInputLastNameHelp" class="form-text">150 characters or fewer.</div>
                         </div>
                         <div class="col-md-6">
                             <label for="registerFormInputEmail" class="form-label"><span class="requirement">*</span>Email</label>
-                            <input type="email" class="form-control disableButton" id="registerFormInputEmail" placeholder="abc@example.com">
+                            <input type="email" class="form-control disableButton" id="registerFormInputEmail" placeholder="abc@example.com" aria-describedby="registerFormInputEmailHelp">
+                            <div id="registerFormInputEmailHelp" class="form-text"></div>
                         </div>
                         <div class="col-md-6">
                             <label for="registerFormInputUsername" class="form-label"><span class="requirement">*</span>Username</label>

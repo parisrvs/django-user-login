@@ -32,7 +32,7 @@ Instructions
         EMAIL_HOST_PASSWORD = 'email password'
         EMAIL_USE_TLS = True
         AUTHENTICATION_DEBUG = Boolean # True or False (use False in production)
-        VERIFICATION_CODE_VALIDITY_IN_MINUTES = Integer # int in the range of [1, 60] only
+        VERIFICATION_CODE_VALIDITY_IN_MINUTES = Integer # range of [1, 60] only
 
 ### 07.  For login and logout functionality, use - 
 - #### To Login, use anyone one of these
@@ -53,7 +53,6 @@ Instructions
 ### 08. When `AUTHENTICATION_DEBUG = TRUE`
 
         - Live EMAILS will not be sent and verification codes / messages, if any, will be displayed in the terminal.
-        - No password validation will happen.
 
 ### 09. When a user closes their account, the app will not delete the `User` but set `is_active` to `False` (see: [User Model](https://docs.djangoproject.com/en/4.1/ref/contrib/auth/#django.contrib.auth.models.User.is_active)) and `set_unusable_password()` (see: [Methods](https://docs.djangoproject.com/en/4.1/ref/contrib/auth/#django.contrib.auth.models.User.set_unusable_password)).
 
