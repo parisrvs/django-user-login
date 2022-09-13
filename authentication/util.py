@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 def validate_username(username):
     l = len(username)
     if ' ' in username or l < 6 or l > 20 or not username or not username.isalnum():
@@ -69,3 +71,15 @@ def encryptemail(email):
         return None
     else:
         return c
+
+
+def is_valid(code_generated_at, VERIFICATION_CODE_VALIDITY_IN_MINUTES):
+    # "2022-09-12 07:58:17.597885"
+    format = "%Y-%m-%d %H:%M:%S.%f"  # The format
+    cga = datetime.strptime(code_generated_at, format)
+    vcvim = int(VERIFICATION_CODE_VALIDITY_IN_MINUTES)
+    dt_now = datetime.now()
+    dt_validity = cga + timedelta(minutes=vcvim)
+    if (dt_now <= dt_validity):
+        return True
+    return False

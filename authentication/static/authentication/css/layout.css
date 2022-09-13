@@ -3,43 +3,35 @@ body {
   margin-top: 100px;
 }
 
-.requirement, .errormessage {
-  color: red;
-}
-
-#navbarSupportedContent ul li a {
-  color: #212529;
+#authenticationNavbar ul li a {
+  color: #921925;
   text-decoration: none;
 }
-#navbarSupportedContent ul li a:hover {
+#authenticationNavbar ul li a:hover {
   color: #212529;
   text-decoration: underline;
 }
 
-.error {
-  color: red;
+.errormessage, .requirement {
+  color: #921925;
 }
 
-.success {
-  color: green;
-}
-
-.btn-transparent-dark {
-  border-color: #212529;
+.btn-outline-dark {
   color: #fff;
   background-color: #212529;
-}
-.btn-transparent-dark:hover {
-  color: #212529;
   border-color: #212529;
+}
+.btn-outline-dark:hover {
+  color: #212529;
   background-color: #fff;
+  border-color: #212529;
 }
 
-.link-dark {
-  color: #212529;
+.link-danger-dark {
+  color: #921925;
   text-decoration: none;
 }
-.link-dark:hover {
+.link-danger-dark:hover {
   color: #212529;
   text-decoration: underline;
 }

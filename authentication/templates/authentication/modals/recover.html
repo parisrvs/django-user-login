@@ -1,35 +1,29 @@
 <div style="display: none;">
-    <!-- Button trigger Recover modal -->
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#recoverModal" id="displayRevoverModal">
-        Recover
+    <!-- Button trigger recover modal -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#recoverModal" id="recoverModalBtn">
+        Launch demo modal
     </button>
 
-    <!-- Button trigger recover verification modal -->
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#recoverVerificationModal" id="recoverVerificationModalButton">
-        recover Verify
-    </button>
-
-    <!-- Button trigger change password modal -->
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#changePasswordModal" id="changePasswordModalButton">
-        change password
+    <!-- Button trigger recovery email verification modal -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#recoveryEmailVerificationModal" id="recoveryEmailVerificationModalBtn">
+        Launch demo modal
     </button>
 
     <!-- Button trigger recover Success modal -->
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#recoverSuccessModal" id="recoverSuccessModalButton">
         Recover Success
     </button>
+
+    <!-- Button trigger change password modal -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#changePasswordModal" id="changePasswordModalButton">
+        change password
+    </button>
 </div>
 
-<!-- Recover Modal -->
-<div class="modal fade" id="recoverModal" data-bs-backdrop="static" data-bs-keyboard="false"  tabindex="-1" aria-labelledby="recoverModalLabel" aria-hidden="true"></div>
 
-
-<!-- recover verification Modal -->
-<div class="modal fade" id="recoverVerificationModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="recoverVerificationModalLabel" aria-hidden="true"></div>
-
-
-<!-- change password Modal -->
-<div class="modal fade" id="changePasswordModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true"></div>
+<div id="recoverModalDiv"></div>
+<div id="verifyRecoveryEmailModalDiv"></div>
+<div id="passwordChangeModalDiv"></div>
 
 
 <!-- Change Password Success Modal -->
@@ -44,7 +38,7 @@
             You have successfully changed your password.
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-transparent-dark btn-sm" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-outline-dark btn-sm" data-bs-dismiss="modal">Close</button>
         </div>
         </div>
     </div>

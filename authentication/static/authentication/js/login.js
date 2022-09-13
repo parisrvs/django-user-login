@@ -14,17 +14,17 @@ function login(event) {
     request.open('POST', '/authentication/');
     request.setRequestHeader("X-CSRFToken", csrftoken);
 
-    disable_buttons();
+    disable();
     prevent_default = true;
 
     request.onload = () => {
         const res = JSON.parse(request.responseText);
         if (res.success) {
             prevent_default = false;
-            enable_buttons();
+            enable();
             window.location.replace(res.next);
         } else {
-            enable_buttons();
+            enable();
             prevent_default = false;
             document.querySelector("#loginInputEmail").focus();
             document.querySelector("#loginError").innerHTML = res.message;

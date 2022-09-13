@@ -1,4 +1,5 @@
 var prevent_default = false;
+var countDownTimer;
 window.addEventListener('beforeunload', function (e) {
     if (prevent_default) {
         e.preventDefault();
@@ -7,31 +8,55 @@ window.addEventListener('beforeunload', function (e) {
     return;
 });
 
-function disable_buttons() {
-    document.querySelectorAll('.toDisable').forEach(b => {
+
+function disable() {
+    document.querySelectorAll(".disableButton").forEach(b => {
         b.disabled = true;
     });
-    document.querySelectorAll(".spinner-border").forEach(s => {
-        s.hidden = false;
-    });
-    document.querySelectorAll(".toDisableAnchorTag").forEach(a => {
+
+    document.querySelectorAll(".disableAnchorTag").forEach(a => {
         a.style.pointerEvents="none";
         a.style.cursor="default";
     });
+
+    document.querySelectorAll(".spinner-border").forEach(s => {
+        s.hidden = false;
+    });
 }
 
-function enable_buttons() {
-    document.querySelectorAll('.toDisable').forEach(b => {
+
+function enable() {
+    document.querySelectorAll(".disableButton").forEach(b => {
         b.disabled = false;
     });
-    document.querySelectorAll(".spinner-border").forEach(s => {
-        s.hidden = true;
-    });
-    document.querySelectorAll(".toDisableAnchorTag").forEach(a => {
+
+    document.querySelectorAll(".disableAnchorTag").forEach(a => {
         a.style.pointerEvents="auto";
         a.style.cursor="pointer";
     });
+
+    document.querySelectorAll(".spinner-border").forEach(s => {
+        s.hidden = true;
+    });
 }
+
+
+function start_countdown(validity, countdownID) {
+    var countDownTime = new Date(`${validity}Z`).getTime();
+    countDownTimer = setInterval(function() {
+        var now = new Date().getTime();
+        var distance = countDownTime - now;
+        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        document.getElementById(countdownID).innerHTML = minutes + "m " + seconds + "s ";
+        if (distance < 0) {
+            clearInterval(countDownTimer);
+            document.getElementById(countdownID).innerHTML = "EXPIRED";
+        }
+    }, 1000);
+}
+
 
 function getCookie(name) {
     let cookieValue = null;

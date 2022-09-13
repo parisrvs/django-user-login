@@ -1,0 +1,26 @@
+<nav class="navbar navbar-expand-md bg-white text-dark fixed-top">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Homepage">
+            <i class="bi bi-house-door fs-5"></i>
+            <span class="badge rounded-pill fs-5 bg-dark text-white">{{sitetitle}}</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#authenticationNavbar" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="authenticationNavbar">
+            <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                {% if request.user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" onclick="displayChangePasswordModal(event, '{{request.user.id}}')" href="">Change Password</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="" onclick="displayCloseAccountModal(event, '{{request.user.id}}')">Close Account</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'authentication:logout' %}">Logout</a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>

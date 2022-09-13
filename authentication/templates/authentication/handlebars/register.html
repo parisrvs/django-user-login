@@ -1,117 +1,113 @@
-{% load static %}
-<script src="{% static 'authentication/js/register.js' %}"></script>
-
-<!-- Register Modal -->
-<script id="registerFormHandlebars" type="text/x-handlebars-template">
-    {% verbatim %}
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content">
-        <div class="modal-header">
-            <h5 class="modal-title" id="registerModalLabel">Register</h5>
-            <button type="button" class="btn-close toDisable" data-bs-dismiss="modal" aria-label="Close" id="registerModalCloseButton"></button>
-        </div>
-        <div class="modal-body text-center">
-            <form id="registerForm" onsubmit="register(event);" class="row g-3">
-                <div class="col-md-6">
-                    <label for="registerFirstName" class="form-label"><span class="requirement">*</span>First Name</label>
-                    <input type="text" class="form-control toDisable" id="registerFirstName" placeholder="First Name">
+<!-- register modal -->
+<script id="registerModalHandlebars" type="text/x-handlebars-template">
+    <div class="modal fade" id="registerModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="registerModalLabel">Register</h5>
+                    <button type="button" class="btn-close disableButton" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="col-md-6">
-                    <label for="registerLastName" class="form-label"><span class="requirement">*</span>Last Name</label>
-                    <input type="text" class="form-control toDisable" id="registerLastName" placeholder="Last Name">
+                <div class="modal-body text-center">
+                    <form class="row g-3" id="registerForm" onsubmit="register(event);">
+                        <div class="col-sm-6">
+                            <label for="registerFormInputFirstName" class="form-label"><span class="requirement">*</span>First Name</label>
+                            <input type="text" class="form-control disableButton" id="registerFormInputFirstName" placeholder="First Name">
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="registerFormInputLastName" class="form-label"><span class="requirement">*</span>Last Name</label>
+                            <input type="text" class="form-control disableButton" id="registerFormInputLastName" placeholder="Last Name">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="registerFormInputEmail" class="form-label"><span class="requirement">*</span>Email</label>
+                            <input type="email" class="form-control disableButton" id="registerFormInputEmail" placeholder="abc@example.com">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="registerFormInputUsername" class="form-label"><span class="requirement">*</span>Username</label>
+                            <input type="text" class="form-control disableButton" id="registerFormInputUsername" placeholder="username" aria-describedby="registerFormInputUsernameHelp">
+                            <div id="registerFormInputUsernameHelp" class="form-text">6 to 20 alpha-numeric characters only</div>
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="registerFormInputPassword1" class="form-label"><span class="requirement">*</span>Password</label>
+                            <input type="password" class="form-control disableButton" id="registerFormInputPassword1" aria-describedby="registerFormInputPassword1Help">
+                            <div id="registerFormInputPassword1Help" class="form-text">8 to 20 characters</div>
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="registerFormInputPassword2" class="form-label"><span class="requirement">*</span>Confirm Password</label>
+                            <input type="password" class="form-control disableButton" id="registerFormInputPassword2" aria-describedby="registerFormInputPassword2Help">
+                            <div id="registerFormInputPassword2Help" class="form-text">must include an alphabet, a number, and a special character</div>
+                        </div>
+                    </form>
+                    <div class="errormessage mt-2 mb-0" id="registerError"><br></div>
                 </div>
-                <div class="col-md-6">
-                    <label for="registerEmail" class="form-label"><span class="requirement">*</span>Email Address</label>
-                    <input type="email" class="form-control toDisable" id="registerEmail" placeholder="abc@example.com">
+                <div class="modal-footer">
+                    <div class="btn-group w-100" role="group">
+                        <button type="button" onclick="displayRecoverModal(event);" class="btn btn-outline-dark btn-sm me-auto w-25 disableButton">Recover</button>
+                        <button type="button" class="btn btn-outline-dark btn-sm mx-auto w-25 disableButton" id="registerModalCloseButton" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" form="registerForm" class="btn btn-outline-dark btn-sm ms-auto w-25 disableButton">
+                            <span class="spinner-border spinner-border-sm text-dark" role="status" aria-hidden="true" hidden></span>
+                            Continue
+                        </button>
+                    </div>
                 </div>
-                <div class="col-md-6">
-                    <label for="registerUsername" class="form-label"><span class="requirement">*</span>Username</label>
-                    <input type="text" class="form-control toDisable" id="registerUsername" aria-describedby="usernameHelp" placeholder="username">
-                    <div id="usernameHelp" class="form-text">6 to 20 alpha-numeric characters only</div>
-                </div>
-                <div class="col-md-6">
-                    <label for="registerPassword" class="form-label"><span class="requirement">*</span>Password</label>
-                    <input type="password" class="form-control toDisable" id="registerPassword" aria-describedby="passwordHelp" placeholder="**********">
-                    <div id="passwordHelp" class="form-text">8 to 20 characters long</div>
-                </div>
-                <div class="col-md-6">
-                    <label for="registerConfirmPassword" class="form-label"><span class="requirement">*</span>Confirm Password</label>
-                    <input type="password" class="form-control toDisable" id="registerConfirmPassword" aria-describedby="password1Help" placeholder="**********">
-                    <div id="password1Help" class="form-text">include an alphabet, a number, and a special character</div>
-                </div>
-            </form>
-            <div class="errormessage" id="registerError"></div>
-        </div>
-        <div class="modal-footer">
-            <div class="btn-group me-auto btn-group-sm w-25" role="group" aria-label="First group">
-                <button type="button" class="btn btn-transparent-dark w-100 toDisable" onclick="displayRecoverModal(event);">Recover</button>
             </div>
-            <div class="btn-group my-auto btn-group-sm w-25" role="group" aria-label="Second group">
-                <button type="button" class="btn btn-transparent-dark w-100 toDisable" data-bs-dismiss="modal" id="registerModalCloseButton">Close</button>
-            </div>
-            <div class="btn-group ms-auto btn-group-sm w-25" role="group" aria-label="Third group">
-                <button type="submit" form="registerForm" class="btn btn-transparent-dark toDisable w-100">
-                    Continue
-                    <span class="spinner-border spinner-border-sm text-dark" role="status" aria-hidden="true" hidden></span>
-                </button>
-            </div>
-        </div>
         </div>
     </div>
-    {% endverbatim %}
 </script>
 
-<!-- Register verification Modal -->
-<script id="registerVerificationFormHandlebars" type="text/x-handlebars-template">
+
+<!-- verify registration email modal modal -->
+<script id="verifyRegistrationEmailModalHandlebars" type="text/x-handlebars-template">
     {% verbatim %}
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-        <div class="modal-header">
-            <h5 class="modal-title" id="registerVerificationModalLabel">Verify</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" disabled id="registerVerificationModalCloseButton"></button>
-        </div>
-        <div class="modal-body text-center">
-            <h6>Verify - {{email}}</h6>
-            <form id="registerVerifyForm" onsubmit="registerVerify(event);">
-                <div class="mb-1">
-                    <label for="registerVerifyCode" class="form-label"><span class="requirement">*</span>Verification Code</label>
-                    <input type="text" class="form-control toDisable" id="registerVerifyCode" placeholder="123456" aria-describedby="registerVerifyHelp">
-                    <div id="registerVerifyHelp" class="form-text">Check your Inbox/Spam folder for a Verification Code</div>
+    <div class="modal fade" id="verifyRegistrationEmailModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="verifyRegistrationEmailModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="verifyRegistrationEmailModalLabel">Verify Email Address</h5>
+                    <button type="button" class="btn-close" disabled data-bs-dismiss="modal" aria-label="Close" id="closeBtn_VerifyRegistrationModal"></button>
                 </div>
-            </form>
-            <a href="" class="toDisableAnchorTag link-dark" onclick="registerVerifyCodeResend(event);">Resend Verification Code</a>
-            <div class="errormessage" id="registerVerifyError"></div>
-        </div>
-        <div class="modal-footer">
-            <div class="btn-group me-auto btn-group-sm w-25" role="group" aria-label="First group">
-                <button type="button" class="btn btn-transparent-dark w-100 toDisable" data-bs-dismiss="modal" onclick="cancelRegisterVerify();">Cancel</button>
+                <div class="modal-body text-center">
+                    <h5>{{email}}</h5>
+                    <h6>Your code is valid for: <span id="register_countdown"></span></h6>
+                    <form id="verifyRegistrationEmailForm" onsubmit="verifyRegistrationEmail(event);">
+                        <div>
+                            <label for="verifyRegistrationEmailCodeInput" class="form-label"><span class="requirement">*</span>Verification Code</label>
+                            <input type="text" class="form-control disableButton" id="verifyRegistrationEmailCodeInput" placeholder="123456" aria-describedby="verifyRegistrationEmailHelp">
+                            <div id="verifyRegistrationEmailHelp" class="form-text">Check your Inbox / Spam folder for a verification code.</div>
+                        </div>
+                    </form>
+                    <a href="" class="link-danger-dark disableAnchorTag" onclick="resendVerificationCode_register(event);">Resend Verification Code</a>
+                    <div class="errormessage mt-2 mb-0" id="verifyRegistrationError"><br></div>
+                </div>
+                <div class="modal-footer">
+                    <div class="btn-group w-100" role="group">
+                        <button type="button" onclick="cancelregistration();" class="btn btn-outline-dark btn-sm me-auto w-25 disableButton" data-bs-dismiss="modal" id="CountdownOverCancelRegistration">Cancel</button>
+                        <button type="submit" form="verifyRegistrationEmailForm" class="btn btn-outline-dark btn-sm ms-auto w-25 disableButton">
+                            <span class="spinner-border spinner-border-sm text-dark" role="status" aria-hidden="true" hidden></span>
+                            Verify
+                        </button>
+                    </div>
+                </div>
             </div>
-            <div class="btn-group ms-auto btn-group-sm w-25" role="group" aria-label="Third group">
-                <button type="submit" form="registerVerifyForm" class="btn btn-transparent-dark toDisable w-100">
-                    Verify
-                    <span class="spinner-border spinner-border-sm text-dark" role="status" aria-hidden="true" hidden></span>
-                </button>
-            </div>
-        </div>
         </div>
     </div>
     {% endverbatim %}
 </script>
 
 
-<!-- Register Unsuccessful Modal -->
 <script id="registerUnsuccessfulModalHandlebars" type="text/x-handlebars-template">
     {% verbatim %}
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-        <div class="modal-header">
-            <h5 class="modal-title" id="registerUnsuccessModalLabel">Oops!!!</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body text-center">{{message}}</div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-transparent-dark btn-sm" data-bs-dismiss="modal">Close</button>
-        </div>
+    <div class="modal fade" id="registrationUnsuccessfulModal" tabindex="-1" aria-labelledby="registrationUnsuccessfulModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="registrationUnsuccessfulModalLabel">Account Registration Unsuccessful</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">{{message}}</div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-dark btn-sm" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
         </div>
     </div>
     {% endverbatim %}

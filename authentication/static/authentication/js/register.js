@@ -1,39 +1,37 @@
 function displayRegisterModal(event) {
     event.preventDefault();
-
-    const details_template = Handlebars.compile(document.querySelector('#registerFormHandlebars').innerHTML);
+    const details_template = Handlebars.compile(document.querySelector('#registerModalHandlebars').innerHTML);
     const details = details_template();
-    document.querySelector("#registerModal").innerHTML = details;
+    document.querySelector("#registerModalDiv").innerHTML = details;
+    document.querySelector("#registerModalBtn").click();
 
-    const registerModal = document.getElementById('registerModal');
-    const registerFirstName = document.getElementById('registerFirstName');
+    const registerModal = document.getElementById('registerModal')
+    const registerFormInputFirstName = document.getElementById('registerFormInputFirstName')
     registerModal.addEventListener('shown.bs.modal', () => {
-        registerFirstName.focus();
+        registerFormInputFirstName.focus()
     })
-
-    document.querySelector("#displayRegisterModalButton").click();
-    return false;
 }
 
 
 function register(event) {
     event.preventDefault();
-    let email = document.querySelector("#registerEmail").value.replace(/^\s+|\s+$/g, '');
-    let username = document.querySelector("#registerUsername").value.replace(/^\s+|\s+$/g, '');
-    let password = document.querySelector("#registerPassword").value.replace(/^\s+|\s+$/g, '');
-    let confirmPassword = document.querySelector("#registerConfirmPassword").value.replace(/^\s+|\s+$/g, '');
-    let first_name = document.querySelector("#registerFirstName").value.replace(/^\s+|\s+$/g, '');
-    let last_name = document.querySelector("#registerLastName").value.replace(/^\s+|\s+$/g, '');
+    
+    let email = document.querySelector("#registerFormInputEmail").value.replace(/^\s+|\s+$/g, '');
+    let username = document.querySelector("#registerFormInputUsername").value.replace(/^\s+|\s+$/g, '');
+    let password = document.querySelector("#registerFormInputPassword1").value.replace(/^\s+|\s+$/g, '');
+    let confirmPassword = document.querySelector("#registerFormInputPassword2").value.replace(/^\s+|\s+$/g, '');
+    let first_name = document.querySelector("#registerFormInputFirstName").value.replace(/^\s+|\s+$/g, '');
+    let last_name = document.querySelector("#registerFormInputLastName").value.replace(/^\s+|\s+$/g, '');
 
     if (!email || !username || !password || !confirmPassword || !first_name || !last_name) {
         document.querySelector("#registerError").innerHTML = "Incomplete Form";
-        document.getElementById('registerFirstName').focus();
+        document.getElementById('registerFormInputFirstName').focus();
         return false;
     }
 
     if (password != confirmPassword) {
         document.querySelector("#registerError").innerHTML = "Passwords Don't Match";
-        registerEmail.focus();
+        document.getElementById('registerFormInputFirstName').focus();
         return false;
     }
 
@@ -42,20 +40,20 @@ function register(event) {
     request.open('POST', '/authentication/register/');
     request.setRequestHeader("X-CSRFToken", csrftoken);
 
-    disable_buttons();
+    disable();
     prevent_default = true;
 
     request.onload = () => {
         const res = JSON.parse(request.responseText);
         if (res.success) {
-            enable_buttons();
+            enable();
             document.querySelector("#registerModalCloseButton").click();
-            displayRegisterVerificationModal(res.email);
+            displayVerifyRegistrationModal(res.email, res.validity);
         } else {
             prevent_default = false;
-            enable_buttons();
-            document.getElementById('registerFirstName').focus();
+            enable();
             document.querySelector("#registerError").innerHTML = res.message;
+            document.getElementById('registerFormInputFirstName').focus();
         }
     };
 
@@ -71,30 +69,58 @@ function register(event) {
 }
 
 
-function displayRegisterVerificationModal(email) {
-    const details_template = Handlebars.compile(document.querySelector('#registerVerificationFormHandlebars').innerHTML);
+function displayVerifyRegistrationModal(email, validity) {
+    const details_template = Handlebars.compile(document.querySelector('#verifyRegistrationEmailModalHandlebars').innerHTML);
     const details = details_template({"email": email});
-    document.querySelector("#registerVerificationModal").innerHTML = details;
-    
-    const registerVerificationModal = document.getElementById('registerVerificationModal');
-    const registerVerifyCode = document.getElementById('registerVerifyCode');
-    registerVerificationModal.addEventListener('shown.bs.modal', () => {
-        registerVerifyCode.focus();
-    })
+    document.querySelector("#verifyRegistrationEmailModalDiv").innerHTML = details;
+    document.querySelector("#verifyRegistrationEmailModalBtn").click();
+    start_countdown(validity, "register_countdown");
 
-    document.querySelector("#registerVerificationModalButton").click();
+    const verifyRegistrationEmailModal = document.getElementById('verifyRegistrationEmailModal')
+    const verifyRegistrationEmailCodeInput = document.getElementById('verifyRegistrationEmailCodeInput')
+    verifyRegistrationEmailModal.addEventListener('shown.bs.modal', () => {
+        verifyRegistrationEmailCodeInput.focus()
+    })
+    return;
 }
 
-function cancelRegisterVerify() {
+
+function resendVerificationCode_register(event) {
+    event.preventDefault();
+    const request = new XMLHttpRequest();
+    request.open('GET', '/authentication/register/verify/resend-code/');
+    
+    disable();
+    request.onload = () => {
+        const res = JSON.parse(request.responseText);
+        if (res.success) {
+            enable();
+            document.getElementById('verifyRegistrationEmailCodeInput').focus();
+            document.querySelector("#verifyRegistrationError").innerHTML = "A new verification code was sent to your email address.";
+            clearInterval(countDownTimer);
+            start_countdown(res.validity, "register_countdown");
+        } else {
+            prevent_default = false;
+            enable();
+            clearInterval(countDownTimer);
+            document.getElementById('verifyRegistrationEmailCodeInput').focus();
+            document.querySelector("#verifyRegistrationError").innerHTML = res.message;
+        }
+    };
+    request.send();
+    return false;
+}
+
+
+function cancelregistration() {
     const request = new XMLHttpRequest();
     request.open('GET', '/authentication/register/verify/cancel/');
     
-    disable_buttons();
     request.onload = () => {
         const res = JSON.parse(request.responseText);
         if (res.success) {
-            enable_buttons();
             prevent_default = false;
+            clearInterval(countDownTimer);
         }
     };
     request.send();
@@ -102,34 +128,13 @@ function cancelRegisterVerify() {
 }
 
 
-function registerVerifyCodeResend(event) {
+function verifyRegistrationEmail(event) {
     event.preventDefault();
-    const request = new XMLHttpRequest();
-    request.open('GET', '/authentication/register/verify/resend/');
-    disable_buttons();
-    request.onload = () => {
-        const res = JSON.parse(request.responseText);
-        if (res.success) {
-            enable_buttons();
-            document.getElementById('registerVerifyCode').focus();
-            document.querySelector("#registerVerifyError").innerHTML = "A new verification code was sent to your email address.";
-        } else {
-            prevent_default = false;
-            enable_buttons();
-            document.getElementById('registerVerifyCode').focus();
-            document.querySelector("#registerVerifyError").innerHTML = res.message;
-        }
-    };
-    request.send();
-    return false;
-}
+    let code = document.querySelector("#verifyRegistrationEmailCodeInput").value.replace(/^\s+|\s+$/g, '');
 
-function registerVerify(event) {
-    event.preventDefault();
-    let code = document.querySelector("#registerVerifyCode").value.replace(/^\s+|\s+$/g, '');
     if (!code) {
-        document.querySelector("#registerVerifyError").innerHTML = "Incomplete Form";
-        document.getElementById('registerVerifyCode').focus();
+        document.querySelector("#verifyRegistrationError").innerHTML = "Incomplete Form";
+        document.getElementById('verifyRegistrationEmailCodeInput').focus();
         return false;
     }
 
@@ -138,33 +143,35 @@ function registerVerify(event) {
     request.open('POST', '/authentication/register/verify/');
     request.setRequestHeader("X-CSRFToken", csrftoken);
 
-    disable_buttons();
+    disable();
 
     request.onload = () => {
         const res = JSON.parse(request.responseText);
         if (res.success) {
-            enable_buttons();
+            enable();
             prevent_default = false;
-            document.querySelector("#registerVerificationModalCloseButton").disabled = false;
-            document.querySelector("#registerVerificationModalCloseButton").click();
-            document.querySelector("#registerVerificationModalCloseButton").disabled = true;
-            document.querySelector("#registerSuccessModalButton").click();
+            clearInterval(countDownTimer);
+            document.querySelector("#closeBtn_VerifyRegistrationModal").disabled = false;
+            document.querySelector("#closeBtn_VerifyRegistrationModal").click();
+            document.querySelector("#closeBtn_VerifyRegistrationModal").disabled = true;
+            document.querySelector("#registrationSuccessModalBtn").click();
         } else {
             if (res.restart) {
-                enable_buttons();
+                enable();
                 prevent_default = false;
-                document.querySelector("#registerVerificationModalCloseButton").disabled = false;
-                document.querySelector("#registerVerificationModalCloseButton").click();
-                document.querySelector("#registerVerificationModalCloseButton").disabled = true;
+                clearInterval(countDownTimer);
+                document.querySelector("#closeBtn_VerifyRegistrationModal").disabled = false;
+                document.querySelector("#closeBtn_VerifyRegistrationModal").click();
+                document.querySelector("#closeBtn_VerifyRegistrationModal").disabled = true;
 
                 const details_template = Handlebars.compile(document.querySelector('#registerUnsuccessfulModalHandlebars').innerHTML);
                 const details = details_template({"message": res.message});
-                document.querySelector("#registerUnsuccessModal").innerHTML = details;
-                document.querySelector("#registerUnsuccessModalButton").click();
+                document.querySelector("#RegistrationUnsuccessfulModalDiv").innerHTML = details;
+                document.querySelector("#RegistrationUnsuccessfulModalBtn").click();
             } else {
-                enable_buttons();
-                document.getElementById('registerVerifyCode').focus();
-                document.querySelector("#registerVerifyError").innerHTML = res.message;
+                enable();
+                document.getElementById('verifyRegistrationEmailCodeInput').focus();
+                document.querySelector("#verifyRegistrationError").innerHTML = res.message;
             }
         }
     };

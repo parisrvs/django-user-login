@@ -1,431 +1,276 @@
-{% load static %}
-
-<script src="{% static 'authentication/js/account.js' %}"></script>
-<script id="PersonDetailsHandlebars" type="text/x-handlebars-template">
+<!-- Account Details modal -->
+<script id="accountDetailsHandlebars" type="text/x-handlebars-template">
     {% verbatim %}
-    <h4>Welcome, {{first_name}} {{last_name}}</h4>
-    <div class="card mb-5" style="width: 100%;">
+    <div class="card" style="width: 100%;">
+        <div class="card-header text-muted">
+            <div class="row">
+                <div class="col text-start">Date Joined</div>
+                <div class="col text-end">{{ date_joined }}</div>
+            </div>
+        </div>
         <div class="card-body">
             <h5 class="card-title">{{first_name}} {{last_name}}</h5>
             <h6 class="card-subtitle mb-2 text-muted">{{username}}</h6>
             <p class="card-text">
-                <div><i class="bi bi-envelope me-2"></i>{{email}}<a href="" onclick="triggerEmailAddressEditing(event, '{{email}}', '{{user_id}}', '{{person_id}}')" class="toDisableAnchorTag"><i class="bi bi-pencil ms-2"></i></a></div>
-                <div><i class="bi bi-phone me-2"></i>{{#if phone}}{{phone}}{{else}}<span class="ms-5">-</span>{{/if}}</div>
-                <div><i class="bi bi-gender-ambiguous me-2"></i>{{#if gender}}{{gender}}{{else}}<span class="ms-5">-</span>{{/if}}</div>
-                <div><i class="bi bi-calendar me-2"></i>{{#if birth_day}}{{birth_day}}{{else}}<span class="ms-5">-</span>{{/if}}</div>
+                <div>{{email}}</div>
             </p>
-            <a href="" onclick="triggerEditDetailsFormModal(event, '{{user_id}}', '{{person_id}}')" class="card-link toDisableAnchorTag">Edit Details</a>
-            <a href="" onclick="triggerAddAddressFormModal(event, '{{user_id}}', '{{person_id}}');" class="card-link toDisableAnchorTag">Add Address</a>
+            <a href="" onclick="displayUpdateDetailsModal(event);" class="card-link link-danger-dark">Update Details</a>
+            <a href="" onclick="displayUpdateEmailModal(event, '{{id}}');" class="card-link link-danger-dark">Update Email</a>
+        </div>
+        <div class="card-footer text-muted">
+            <div class="row">
+                <div class="col text-start">Last Login</div>
+                <div class="col text-end">{{ last_login }}</div>
+            </div>
         </div>
     </div>
-    {{#if address}}
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-        {{#each address}}
-        <div class="col">
-            <div class="card h-100">
-                <div class="card-body">
-                    <h5 class="card-title">{{this.first_name}} {{this.last_name}}</h5>
-                    <h6 class="card-subtitle mb-2 text-muted"><i class="bi bi-envelope me-2"></i>{{this.email}}</h6>
-                    <p class="card-text">
-                        <div><i class="bi bi-phone me-2"></i>{{this.mobile}}</div>
-                        <div>
-                            <i class="bi bi-telephone me-2"></i>
-                            {{#if this.homephone}}{{this.homephone}}{{else}}<span class="ms-5">-</span>{{/if}}
+    {% endverbatim %}
+</script>
+
+
+<!-- edit account details modal -->
+<script id="editAccountDetailsHandlebars" type="text/x-handlebars-template">
+    {% verbatim %}
+    <div class="modal fade" id="editAccountDetailsModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="editAccountDetailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editAccountDetailsModalLabel">Edit Account Details</h5>
+                    <button type="button" class="btn-close disableButton" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form class="row g-3" onsubmit="editDetails(event, '{{id}}');" id="editDetailsForm">
+                        <div class="col-md-6">
+                            <label for="editAccountDetailsFormInputFirstName" class="form-label"><span class="requirement">*</span>First Name</label>
+                            <input type="text" class="form-control disableButton" id="editAccountDetailsFormInputFirstName" placeholder="First Name" value="{{first_name}}">
                         </div>
-                        <div><i class="bi bi-mailbox me-2"></i>Address</div>
-                        <div class="ms-4">{{this.address1}}</div>
-                        <div class="ms-4">{{#if this.address2}}{{this.address2}}{{else}}<br>{{/if}}</div>
-                        <div class="ms-4">{{this.pincode}}, {{this.city}}</div>
-                        <div class="ms-4">{{this.state}}, {{this.country}}</div>
-                        <div class="ms-4">{{this.landmark}}</div>
-                    </p>
-                    <a href="" class="card-link toDisableAnchorTag" onclick="triggerEditAddress(event, '{{this.id}}', '{{this.user_id}}', '{{this.person_id}}');">
-                        <i class="bi bi-pencil me-2"></i>
-                        Edit
-                    </a>
-                    <a href="" class="card-link text-danger toDisableAnchorTag" onclick="deleteAddress(event, '{{this.id}}', '{{this.user_id}}', '{{this.person_id}}')">
-                        <i class="bi bi-trash mx-2"></i>
-                        Delete
-                    </a>
-                    <span class="spinner-grow text-danger spinner-grow-sm" role="status" hidden id="deleteAddressAnchorTagSpinner{{this.id}}"></span>
-                    <br>
-                    {{#if this.primary}}
-                    <i class="bi bi-signpost me-2"></i><span class="text-success">Primary Address</span>
-                    {{else}}
-                    <a href="" onclick="makeAddressPrimary(event, '{{this.id}}', '{{this.user_id}}', '{{this.person_id}}');" class="card-link toDisableAnchorTag">Make Primary</a>
-                    <span class="spinner-grow text-primary spinner-grow-sm" role="status" hidden id="makeAddressPrimaryAnchorTagSpinner{{this.id}}"></span>
-                    {{/if}}
+                        <div class="col-md-6">
+                            <label for="editAccountDetailsFormInputLastName" class="form-label"><span class="requirement">*</span>Last Name</label>
+                            <input type="text" class="form-control disableButton" id="editAccountDetailsFormInputLastName" placeholder="Last Name" value="{{last_name}}">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="editAccountDetailsFormInputEmail" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="editAccountDetailsFormInputEmail" disabled placeholder="Email Address" value="{{email}}">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="editAccountDetailsFormInputUsername" class="form-label"><span class="requirement">*</span>Username</label>
+                            <input type="text" class="form-control disableButton" id="editAccountDetailsFormInputUsername" placeholder="Username" value="{{username}}" aria-describedby="editAccountDetailsUsernameHelp">
+                            <div id="editAccountDetailsUsernameHelp" class="form-text">6 to 20 alpha-numeric characters only</div>
+                        </div>
+                    </form>
+                    <div class="errormessage" id="editDetailsError"><br></div>
+                </div>
+                <div class="modal-footer">
+                    <div class="btn-group w-100" role="group">
+                        <button type="button" class="btn btn-outline-dark btn-sm me-auto w-25 disableButton" data-bs-dismiss="modal" id="editAccountDetailsModalCloseBtn">Close</button>
+                        <button type="submit" form="editDetailsForm" class="btn btn-outline-dark btn-sm ms-auto w-25 disableButton">
+                            <div class="spinner-border spinner-border-sm" hidden role="status"></div>
+                            Update
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
-        {{/each}}
-    </div>
-    {{/if}}
-    {% endverbatim %}
-</script>
-
-
-<script id="editPersonalDetailsHandlebars" type="text/x-handlebars-template">
-    {% verbatim %}
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-        <div class="modal-header">
-            <h5 class="modal-title" id="editPersonalDetailsModalLabel">Edit Details</h5>
-            <button type="button" class="btn-close toDisable" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body text-center" id="editPersonalDetailsFormDiv">
-            <form class="row g-3" id="editPersonalDetailsForm" onsubmit="editPersonalDetails(event, '{{user_id}}', '{{person_id}}');">
-                <div class="col-md-6">
-                    <label for="editDetailsFirstName" class="form-label"><span class="requirement">*</span>First Name</label>
-                    <input type="text" class="form-control form-control-sm toDisable" id="editDetailsFirstName" value="{{first_name}}">
-                </div>
-                <div class="col-md-6">
-                    <label for="editDetailsLastName" class="form-label"><span class="requirement">*</span>Last Name</label>
-                    <input type="text" class="form-control form-control-sm toDisable" id="editDetailsLastName" value="{{last_name}}">
-                </div>
-                <div class="col-md-6">
-                    <label for="editDetailsMobile" class="form-label">Mobile</label>
-                    <input type="text" class="form-control form-control-sm toDisable" id="editDetailsMobile" value="{{phone}}">
-                </div>
-                <div class="col-md-6">
-                    <label for="editDetailsUsername" class="form-label"><span class="requirement">*</span>Username</label>
-                    <input type="text" class="form-control form-control-sm toDisable" id="editDetailsUsername" value="{{username}}">
-                </div>
-                <div class="col-md-6">
-                    <label for="editDetailsGender" class="form-label">Gender</label>
-                    <select class="form-select form-select-sm toDisable" id="editDetailsGender">
-                        <option disabled selected value="{{gender}}">{{gender_l}}</option>
-                        <option value="M">Male</option>
-                        <option value="F">Female</option>
-                        <option value="N">Non Binary</option>
-                    </select>
-                </div>
-                <div class="col-md-6">
-                    <label for="editDetailsDOB" class="form-label">Date of Birth</label>
-                    <input type="date" class="form-control form-control-sm toDisable" id="editDetailsDOB" value="{{birth_day}}">
-                </div>
-            </form>
-            <div class="errormessage" id="editDetailsError"></div>
-        </div>
-        <div class="modal-footer">
-            <div class="btn-group me-auto btn-group-sm w-25" role="group" aria-label="First group">
-                <button type="button" class="btn btn-transparent-dark toDisable" data-bs-dismiss="modal" id="editPersonalDetailsModalCloseBtn">Close</button>
-            </div>
-            <div class="btn-group ms-auto btn-group-sm w-25" role="group" aria-label="Third group">
-                <button type="submit" form="editPersonalDetailsForm" class="btn btn-transparent-dark toDisable">
-                    Update
-                    <span class="spinner-border spinner-border-sm text-dark" role="status" aria-hidden="true" hidden></span>
-                </button>
-            </div>
-        </div>
-        </div>
-    </div>
-    {% endverbatim %}
-</script>
-
-<script id="addAddressHandlebars" type="text/x-handlebars-template">
-    {% verbatim %}
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content">
-        <div class="modal-header">
-            <h5 class="modal-title" id="addAddressModalLabel">Add Address</h5>
-            <button type="button" class="btn-close toDisable" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body text-center">
-            <form class="row g-4" id="addAddressForm" onsubmit="add_address(event, '{{user_id}}', '{{person_id}}');">
-                <div class="col-sm-6 col-lg-3">
-                    <label for="addAddressFirstName" class="form-label"><span class="requirement">*</span>First Name</label>
-                    <input type="text" class="form-control form-control-sm toDisable" id="addAddressFirstName">
-                </div>
-                <div class="col-sm-6 col-lg-3">
-                    <label for="addAddressLastName" class="form-label"><span class="requirement">*</span>Last Name</label>
-                    <input type="text" class="form-control form-control-sm toDisable" id="addAddressLastName">
-                </div>
-                <div class="col-sm-6 col-lg-3">
-                    <label for="addAddressMobile" class="form-label"><span class="requirement">*</span>Mobile</label>
-                    <input type="text" class="form-control form-control-sm toDisable" id="addAddressMobile">
-                </div>
-                <div class="col-sm-6 col-lg-3">
-                    <label for="addAddressHomephone" class="form-label">Home Phone#</label>
-                    <input type="text" class="form-control form-control-sm toDisable" id="addAddressHomephone">
-                </div>
-                <div class="col-12 col-lg-6">
-                    <label for="addAddressAddress1" class="form-label"><span class="requirement">*</span>Address Line 1</label>
-                    <input type="text" class="form-control form-control-sm toDisable" id="addAddressAddress1">
-                </div>
-                <div class="col-12 col-lg-6">
-                    <label for="addAddressAddress2" class="form-label">Address Line 2</label>
-                    <input type="text" class="form-control form-control-sm toDisable" id="addAddressAddress2">
-                </div>
-                <div class="col-sm-6 col-lg-3">
-                    <label for="addAddressCity" class="form-label"><span class="requirement">*</span>City</label>
-                    <input type="text" class="form-control form-control-sm toDisable" id="addAddressCity">
-                </div>
-                <div class="col-sm-6 col-lg-3">
-                    <label for="addAddressState" class="form-label"><span class="requirement">*</span>State</label>
-                    <input type="text" class="form-control form-control-sm toDisable" id="addAddressState">
-                </div>
-                <div class="col-sm-6 col-lg-3">
-                    <label for="addAddressPincode" class="form-label"><span class="requirement">*</span>Pincode</label>
-                    <input type="text" class="form-control form-control-sm toDisable" id="addAddressPincode">
-                </div>
-                <div class="col-sm-6 col-lg-3">
-                    <label for="addAddressCountry" class="form-label"><span class="requirement">*</span>Country</label>
-                    <input type="text" class="form-control form-control-sm toDisable" id="addAddressCountry">
-                </div>
-                <div class="col-lg-6">
-                    <label for="addAddressLandmark" class="form-label"><span class="requirement">*</span>Landmark</label>
-                    <input type="text" class="form-control form-control-sm toDisable" id="addAddressLandmark">
-                </div>
-                <div class="col-lg-6">
-                    <label for="addAddressEmail" class="form-label"><span class="requirement">*</span>Email</label>
-                    <input type="email" class="form-control form-control-sm toDisable" id="addAddressEmail">
-                </div>
-            </form>
-            <div class="errormessage" id="addAddressError"></div>
-        </div>
-        <div class="modal-footer">
-            <div class="btn-group me-auto btn-group-sm w-25" role="group" aria-label="First group">
-                <button type="button" class="btn btn-transparent-dark toDisable w-100" data-bs-dismiss="modal" id="addAddressModalCloseBtn">Close</button>
-            </div>
-            <div class="btn-group ms-auto btn-group-sm w-25" role="group" aria-label="Third group">
-                <button type="submit" form="addAddressForm" class="btn btn-transparent-dark toDisable w-100">
-                    Add
-                    <span class="spinner-border spinner-border-sm text-dark" role="status" aria-hidden="true" hidden></span>
-                </button>
-            </div>
-        </div>
         </div>
     </div>
     {% endverbatim %}
 </script>
 
 
-<script id="editAddressHandlebars" type="text/x-handlebars-template">
-    {% verbatim %}
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content">
-        <div class="modal-header">
-            <h5 class="modal-title" id="editAddressModalLabel">Edit Address</h5>
-            <button type="button" class="btn-close toDisable" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body text-center" id="editAddressFormDiv">
-            <form class="row g-3" id="editAddressForm" onsubmit="editAddress(event, '{{id}}', '{{user_id}}', '{{person_id}}');">
-                <div class="col-sm-6 col-lg-3">
-                    <label for="editAddressFirstName" class="form-label"><span class="requirement">*</span>First Name</label>
-                    <input type="text" class="form-control form-control-sm toDisable" id="editAddressFirstName" value="{{first_name}}">
-                </div>
-                <div class="col-sm-6 col-lg-3">
-                    <label for="editAddressLastName" class="form-label"><span class="requirement">*</span>Last Name</label>
-                    <input type="text" class="form-control form-control-sm toDisable" id="editAddressLastName" value="{{last_name}}">
-                </div>
-                <div class="col-sm-6 col-lg-3">
-                    <label for="editAddressMobile" class="form-label"><span class="requirement">*</span>Mobile</label>
-                    <input type="text" class="form-control form-control-sm toDisable" id="editAddressMobile" value="{{mobile}}">
-                </div>
-                <div class="col-sm-6 col-lg-3">
-                    <label for="editAddressHomephone" class="form-label">Home Phone#</label>
-                    <input type="text" class="form-control form-control-sm toDisable" id="editAddressHomephone" value="{{homephone}}">
-                </div>
-                <div class="col-12 col-lg-6">
-                    <label for="editAddressAddress1" class="form-label"><span class="requirement">*</span>Address Line 1</label>
-                    <input type="text" class="form-control form-control-sm toDisable" id="editAddressAddress1" value="{{address1}}">
-                </div>
-                <div class="col-12 col-lg-6">
-                    <label for="editAddressAddress2" class="form-label">Address Line 2</label>
-                    <input type="text" class="form-control form-control-sm toDisable" id="editAddressAddress2" value="{{address2}}">
-                </div>
-                <div class="col-sm-6 col-lg-3">
-                    <label for="editAddressCity" class="form-label"><span class="requirement">*</span>City</label>
-                    <input type="text" class="form-control form-control-sm toDisable" id="editAddressCity" value="{{city}}">
-                </div>
-                <div class="col-sm-6 col-lg-3">
-                    <label for="editAddressState" class="form-label"><span class="requirement">*</span>State</label>
-                    <input type="text" class="form-control form-control-sm toDisable" id="editAddressState" value="{{state}}">
-                </div>
-                <div class="col-sm-6 col-lg-3">
-                    <label for="editAddressPincode" class="form-label"><span class="requirement">*</span>Pincode</label>
-                    <input type="text" class="form-control form-control-sm toDisable" id="editAddressPincode" value="{{pincode}}">
-                </div>
-                <div class="col-sm-6 col-lg-3">
-                    <label for="editAddressCountry" class="form-label"><span class="requirement">*</span>Country</label>
-                    <input type="text" class="form-control form-control-sm toDisable" id="editAddressCountry" value="{{country}}">
-                </div>
-                <div class="col-lg-6">
-                    <label for="editAddressLandmark" class="form-label"><span class="requirement">*</span>Landmark</label>
-                    <input type="text" class="form-control form-control-sm toDisable" id="editAddressLandmark" value="{{landmark}}">
-                </div>
-                <div class="col-lg-6">
-                    <label for="editAddressEmail" class="form-label"><span class="requirement">*</span>Email</label>
-                    <input type="email" class="form-control form-control-sm toDisable" id="editAddressEmail" value="{{email}}">
-                </div>
-            </form>
-            <div class="errormessage" id="editAddressError"></div>
-        </div>
-        <div class="modal-footer">
-            <div class="btn-group me-auto btn-group-sm w-25" role="group" aria-label="First group">
-                <button type="button" class="btn btn-transparent-dark toDisable w-100" data-bs-dismiss="modal" id="editAddressModalCloseBtn">Close</button>
-            </div>
-            <div class="btn-group ms-auto btn-group-sm w-25" role="group" aria-label="Third group">
-                <button type="submit" form="editAddressForm" class="btn btn-transparent-dark toDisable w-100">
-                    Update
-                    <span class="spinner-border spinner-border-sm text-dark" role="status" aria-hidden="true" hidden></span>
-                </button>
-            </div>
-        </div>
-        </div>
-    </div>
-    {% endverbatim %}
-</script>
-
-<!-- edit email handlebar -->
+<!-- edit email modal -->
 <script id="editEmailHandlebars" type="text/x-handlebars-template">
     {% verbatim %}
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-        <div class="modal-header">
-            <h5 class="modal-title" id="editEmailModalLabel">Change Email Address</h5>
-            <button type="button" class="btn-close toDisable" data-bs-dismiss="modal" aria-label="Close" id="editEmailModalCloseButton"></button>
-        </div>
-        <div class="modal-body text-center" id="editEmailFormDiv">
-            <form id="editEmailForm" onsubmit="editEmailAddress(event, '{{email}}', '{{user_id}}', '{{person_id}}');">
-                <div class="mb-3">
-                    <label for="editEmailCurrent" class="form-label"><span class="requirement">*</span>Email Address</label>
-                    <input type="email" class="form-control" id="editEmailCurrent" disabled value="{{email}}">
+    <div class="modal fade" id="editEmailModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="editEmailModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editEmailModalLabel">Edit Email Address</h5>
+                    <button type="button" class="btn-close disableButton" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="mb-3">
-                    <label for="editEmailNew" class="form-label"><span class="requirement">*</span>New Email Address</label>
-                    <input type="email" class="form-control toDisable" id="editEmailNew" placeholder="abc@example.com">
+                <div class="modal-body">
+                    <form class="row g-3" onsubmit="editEmail(event, '{{user_id}}');" id="editEmailForm">
+                        <div class="col-12">
+                            <label for="editEmailFormInputPassword" class="form-label"><span class="requirement">*</span>Confirm Password</label>
+                            <input type="password" class="form-control disableButton" id="editEmailFormInputPassword" placeholder="********">
+                        </div>
+                        <div class="col-12">
+                            <label for="editEmailFormInputNewEmail" class="form-label"><span class="requirement">*</span>New Email</label>
+                            <input type="email" class="form-control disableButton" id="editEmailFormInputNewEmail" placeholder="abc@example.com">
+                        </div>
+                    </form>
+                    <div class="errormessage mt-2" id="editEmailError"><br></div>
                 </div>
-                <div class="mb-3">
-                    <label for="editEmailPassword" class="form-label"><span class="requirement">*</span>Confirm Password</label>
-                    <input type="password" class="form-control toDisable" id="editEmailPassword" placeholder="***********">
+                <div class="modal-footer">
+                    <div class="btn-group w-100" role="group">
+                        <button type="button" class="btn btn-outline-dark btn-sm me-auto w-25 disableButton" data-bs-dismiss="modal" id="editEmailModalCloseBtn">Close</button>
+                        <button type="submit" form="editEmailForm" class="btn btn-outline-dark btn-sm ms-auto w-25 disableButton">
+                            <div class="spinner-border spinner-border-sm" hidden role="status"></div>
+                            Update
+                        </button>
+                    </div>
                 </div>
-            </form>
-            <div class="errormessage" id="editEmailError"></div>
-        </div>
-        <div class="modal-footer">
-            <div class="btn-group me-auto btn-group-sm w-25" role="group" aria-label="First group">
-                <button type="button" class="btn btn-transparent-dark toDisable w-100" data-bs-dismiss="modal">Close</button>
             </div>
-            <div class="btn-group ms-auto btn-group-sm w-25" role="group" aria-label="Third group">
-                <button type="submit" form="editEmailForm" class="btn btn-transparent-dark toDisable w-100">
-                    Continue
-                    <span class="spinner-border spinner-border-sm text-dark" role="status" aria-hidden="true" hidden></span>
-                </button>
-            </div>
-        </div>
         </div>
     </div>
     {% endverbatim %}
 </script>
 
 
-<script id="editEmailVerifyHandlebars" type="text/x-handlebars-template">
+<!-- change email verification Modal -->
+<script id="verifyEditEmailHandlebars" type="text/x-handlebars-template">
     {% verbatim %}
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-        <div class="modal-header">
-            <h5 class="modal-title" id="editEmailVerifyModalLabel">Verify Email Address</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" disabled id="editEmailVerifyModalCloseButton"></button>
-        </div>
-        <div class="modal-body text-center">
-            <h6>Verify - {{email}}</h6>
-            <form id="editEmailVerifyForm" onsubmit="editEmailVerify(event, '{{user_id}}', '{{person_id}}', '{{email}}');">
-                <div class="mb-1">
-                    <label for="editEmailVerifyCode" class="form-label"><span class="requirement">*</span>Verification Code</label>
-                    <input type="text" class="form-control toDisable" id="editEmailVerifyCode" placeholder="123456" aria-describedby="editEmailVerifyHelp">
-                    <div id="editEmailVerifyHelp" class="form-text">Check your Inbox/Spam folder for a Verification Code</div>
+    <div class="modal fade" id="editEmailVerificationModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="editEmailVerificationModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editEmailVerificationModalLabel">Verify</h5>
+                    <button type="button" class="btn-close" disabled data-bs-dismiss="modal" aria-label="Close" id="editEmailVerificationModalCloseBtn"></button>
                 </div>
-            </form>
-            <a href="" class="toDisableAnchorTag link-dark" onclick="editEmailVerifyCodeResend(event, '{{user_id}}', '{{person_id}}', '{{email}}');">Resend Verification Code</a>
-            <div class="errormessage" id="editEmailVerifyError"></div>
-        </div>
-        <div class="modal-footer">
-            <div class="btn-group me-auto btn-group-sm w-25" role="group" aria-label="First group">
-                <button type="button" class="btn btn-transparent-dark toDisable w-100" data-bs-dismiss="modal" onclick="cancelEditEmailVerify();">Cancel</button>
+                <div class="modal-body text-center">
+                    <h5>{{new_email}}</h5>
+                    <h6>Your verification code is valid for: <span id="editEmail_countdown"></span></h6>
+                    <form id="editEmailVerificationForm" onsubmit="editEmailVerification(event, '{{new_email}}', '{{username}}', '{{current_email}}');">
+                        <div>
+                            <label for="editEmailVerificationCodeInput" class="form-label"><span class="requirement">*</span>Verification Code</label>
+                            <input type="text" class="form-control disableButton" id="editEmailVerificationCodeInput" placeholder="123456" aria-describedby="editEmailHelp">
+                            <div id="editEmailHelp" class="form-text">Check your Inbox / Spam folder for a verification code.</div>
+                        </div>
+                    </form>
+                    <a href="" class="link-danger-dark disableAnchorTag" onclick="resendEditEmailVerificationCode(event, '{{new_email}}');">Resend Verification Code</a>
+                    <div class="errormessage mt-2 mb-0" id="editEmailVerificationError"><br></div>
+                </div>
+                <div class="modal-footer">
+                    <div class="btn-group w-100" role="group">
+                        <button type="button" onclick="cancelEmailEditing();" class="btn btn-outline-dark btn-sm me-auto w-25 disableButton" data-bs-dismiss="modal" id="cancelEmailEditingBtn">Cancel</button>
+                        <button type="submit" form="editEmailVerificationForm" class="btn btn-outline-dark btn-sm ms-auto w-25 disableButton">
+                            <span class="spinner-border spinner-border-sm text-dark" role="status" aria-hidden="true" hidden></span>
+                            Verify
+                        </button>
+                    </div>
+                </div>
             </div>
-            <div class="btn-group ms-auto btn-group-sm w-25" role="group" aria-label="Third group">
-                <button type="submit" form="editEmailVerifyForm" class="btn btn-transparent-dark toDisable w-100">
-                    Verify
-                    <span class="spinner-border spinner-border-sm text-dark" role="status" aria-hidden="true" hidden></span>
-                </button>
-            </div>
-        </div>
         </div>
     </div>
     {% endverbatim %}
 </script>
 
 
-<script id="updatePasswordHandlebars" type="text/x-handlebars-template">
+<!-- change password Modal -->
+<script id="changePasswordHandlebars" type="text/x-handlebars-template">
     {% verbatim %}
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-        <div class="modal-header">
-            <h5 class="modal-title" id="updatePasswordModalLabel">Update Password</h5>
-            <button type="button" class="btn-close toDisable" data-bs-dismiss="modal" aria-label="Close" id="updatePasswordModalCloseButton"></button>
-        </div>
-        <div class="modal-body text-center">
-            <form id="updatePasswordForm" onsubmit="updatepassword(event, '{{user_id}}');">
-                <div class="mb-1">
-                    <label for="updatePasswordCurrent" class="form-label"><span class="requirement">*</span>Current Password</label>
-                    <input type="password" class="form-control toDisable" id="updatePasswordCurrent" placeholder="*********">
+    <div class="modal fade" id="changePasswordModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="changePasswordModalLabel">Change Password</h5>
+                    <button type="button" class="btn-close disableButton" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="mb-1">
-                    <label for="updatePasswordNew" class="form-label"><span class="requirement">*</span>New Password</label>
-                    <input type="password" class="form-control toDisable" id="updatePasswordNew" aria-describedby="updatePasswordHelp" placeholder="*********">
-                    <div id="updatePasswordHelp" class="form-text">8 to 20 characters long</div>
+                <div class="modal-body">
+                    <form class="row g-3" onsubmit="changepassword(event, '{{user_id}}');" id="changePasswordForm">
+                        <div class="col-12">
+                            <label for="changePasswordFormInputCurrentPassword" class="form-label"><span class="requirement">*</span>Current Password</label>
+                            <input type="password" class="form-control disableButton" id="changePasswordFormInputCurrentPassword" placeholder="current password">
+                        </div>
+                        <div class="col-12">
+                            <label for="changePasswordFormInputNewPassword1" class="form-label"><span class="requirement">*</span>New Password</label>
+                            <input type="password" class="form-control disableButton" id="changePasswordFormInputNewPassword1" aria-describedby="setNewPassword1Help" placeholder="new password">
+                            <div id="setNewPassword1Help" class="form-text">8 to 20 characters</div>
+                        </div>
+                        <div class="col-12">
+                            <label for="changePasswordFormInputNewPassword2" class="form-label"><span class="requirement">*</span>Confirm New Password</label>
+                            <input type="password" class="form-control disableButton" id="changePasswordFormInputNewPassword2" aria-describedby="setNewPassword2Help" placeholder="confirm new password">
+                            <div id="setNewPassword2Help" class="form-text">must include an alphabet, a number, and a special character</div>
+                        </div>
+                    </form>
+                    <div class="errormessage mt-2" id="changePasswordError"><br></div>
                 </div>
-                <div class="mb-1">
-                    <label for="updatePasswordNew1" class="form-label"><span class="requirement">*</span>Confirm New Password</label>
-                    <input type="password" class="form-control toDisable" id="updatePasswordNew1" aria-describedby="updatePasswordHelp1" placeholder="*********">
-                    <div id="updatePasswordHelp1" class="form-text">include an alphabet, a number, and a special character</div>
+                <div class="modal-footer">
+                    <div class="btn-group w-100" role="group">
+                        <button type="button" class="btn btn-outline-dark btn-sm me-auto w-25 disableButton" data-bs-dismiss="modal" id="changePasswordModalCloseBtn">Close</button>
+                        <button type="submit" form="changePasswordForm" class="btn btn-outline-dark btn-sm ms-auto w-25 disableButton">
+                            <div class="spinner-border spinner-border-sm" hidden role="status"></div>
+                            Change
+                        </button>
+                    </div>
                 </div>
-            </form>
-            <div class="errormessage" id="updatePasswordError"></div>
-        </div>
-        <div class="modal-footer">
-            <div class="btn-group me-auto btn-group-sm w-25" role="group" aria-label="First group">
-                <button type="button" class="btn btn-transparent-dark toDisable w-100" data-bs-dismiss="modal">Cancel</button>
             </div>
-            <div class="btn-group ms-auto btn-group-sm w-25" role="group" aria-label="Third group">
-                <button type="submit" form="updatePasswordForm" class="btn btn-transparent-dark toDisable w-100">
-                    Update
-                    <span class="spinner-border spinner-border-sm text-dark" role="status" aria-hidden="true" hidden></span>
-                </button>
-            </div>
-        </div>
         </div>
     </div>
     {% endverbatim %}
 </script>
 
 
-
+<!-- Close account Modal -->
 <script id="closeAccountHandlebars" type="text/x-handlebars-template">
     {% verbatim %}
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-        <div class="modal-header">
-            <h5 class="modal-title" id="accountCloseModalLabel">Close Account</h5>
-            <button type="button" class="btn-close toDisable" data-bs-dismiss="modal" aria-label="Close" id="accountCloseModalButton"></button>
-        </div>
-        <div class="modal-body text-center">
-            <span class="text-danger fs-4">Are you sure you want to close your account?</span>
-            <div class="errormessage" id="closeAccountError"></div>
-        </div>
-        <div class="modal-footer">
-            <div class="btn-group me-auto btn-group-sm w-25" role="group" aria-label="First group">
-                <button type="button" class="btn btn-transparent-dark toDisable w-100" data-bs-dismiss="modal">Cancel</button>
+    <div class="modal fade" id="closeAccountModal" data-bs-backdrop="static" data-bs-keyboard="false"  tabindex="-1" aria-labelledby="closeAccountModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="closeAccountModalLabel">Close Account</h5>
+                <button type="button" class="btn-close disableButton" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="btn-group ms-auto btn-group-sm w-25" role="group" aria-label="Second group">
-                <button type="button" class="btn btn-transparent-dark toDisable w-100" onclick="deleteAccount('{{user_id}}');">
-                    Confirm
-                    <span class="spinner-border spinner-border-sm text-dark" role="status" aria-hidden="true" hidden></span>
-                </button>
+            <div class="modal-body text-center">
+                <h5 class="text-danger">This action is irreversible</h5>
+                <form onsubmit="closeAccount(event, '{{user_id}}');" id="closeAccountForm">
+                    <div class="mb-3">
+                        <label for="closeAccountFormInputPassword" class="form-label"><span class="requirement">*</span>Confirm Password</label>
+                        <input type="password" class="form-control disableButton" id="closeAccountFormInputPassword" placeholder="current password">
+                    </div>
+                </form>
+                Press <strong>Cancel</strong> to return and <strong>Continue</strong> to proceed.
+                <div class="errormessage" id="closeAccountFormError"><br></div>
+            </div>
+            <div class="modal-footer">
+                <div class="btn-group w-100" role="group">
+                    <button type="button" class="btn btn-outline-dark btn-sm me-auto w-25 disableButton" data-bs-dismiss="modal" id="closeAccountModalCloseBtn">Cancel</button>
+                    <button type="submit" form="closeAccountForm" class="btn btn-outline-dark btn-sm ms-auto w-25 disableButton">
+                        <div class="spinner-border spinner-border-sm" hidden role="status"></div>
+                        Continue
+                    </button>
+                </div>
+            </div>
             </div>
         </div>
+    </div>
+    {% endverbatim %}
+</script>
+
+
+<!-- Close account verification Modal -->
+<script id="closeAccountVarificationHandlebars" type="text/x-handlebars-template">
+    {% verbatim %}
+    <div class="modal fade" id="closeAccountVerificationModal" data-bs-backdrop="static" data-bs-keyboard="false"  tabindex="-1" aria-labelledby="closeAccountVerificationModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="closeAccountVerificationModalLabel">Close Account</h5>
+                <button type="button" class="btn-close" disabled data-bs-dismiss="modal" aria-label="Close" id="closeAccountVerificationModalCloseBtn"></button>
+            </div>
+            <div class="modal-body text-center">
+                <h5 class="text-danger">This action is irreversible</h5>
+                <p>For security reasons we have sent a verification code on your registered email address.</p>
+                <h6>Your code is valid for: <span id="closeAccount_countdown"></span></h6>
+                <form onsubmit="close_account(event, '{{user_id}}')" id="closeAccountVerificationForm">
+                    <div class="mb-3">
+                        <label for="closeAccountVerificationFormInputCode" class="form-label"><span class="requirement">*</span>Verification Code</label>
+                        <input type="text" class="form-control disableButton" id="closeAccountVerificationFormInputCode" aria-describedby="closeAccountVerificationHelp">
+                        <div id="closeAccountVerificationHelp" class="form-text">Check your Inbox / Spam folder for a verification code.</div>
+                    </div>
+                </form>
+                <p>Press <strong>Cancel</strong> to return and <strong>Close</strong> to permanently close your account.</p>
+                <a href="" class="link-danger-dark disableAnchorTag" onclick="resendCloseAccountVerificationCode(event);">Resend Verification Code</a>
+                <div class="errormessage" id="closeAccountVerificationFormError"><br></div>
+            </div>
+            <div class="modal-footer">
+                <div class="btn-group w-100" role="group">
+                    <button type="button" onclick="cancelAccountClosure();" class="btn btn-outline-dark btn-sm me-auto w-25 disableButton" data-bs-dismiss="modal" id="cancelAccountClosureBtn">Cancel</button>
+                    <button type="submit" form="closeAccountVerificationForm" class="btn btn-outline-dark btn-sm ms-auto w-25 disableButton">
+                        <div class="spinner-border spinner-border-sm" hidden role="status"></div>
+                        Close
+                    </button>
+                </div>
+            </div>
+            </div>
         </div>
     </div>
     {% endverbatim %}

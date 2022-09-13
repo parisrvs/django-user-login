@@ -12,38 +12,11 @@
         {% block style %}{% endblock %}
     </head>
     <body>
-        <nav class="navbar navbar-expand-md bg-white fixed-top">
-            <div class="container-fluid">
-                <a class="navbar-brand toDisableAnchorTag" href="/" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Homepage">
-                    <i class="bi bi-house-door fs-5 text-dark"></i>
-                    <span class="badge fs-5 bg-dark text-white rounded-pill">
-                        {{sitetitle}}
-                    </span>
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav me-auto mb-2 mb-md-0">
-                        {% if request.user.is_authenticated %}
-                        <li class="nav-item">
-                            <a class="nav-link toDisableAnchorTag" href="" onclick="displayUpdatePasswordModal(event, '{{request.user.id}}');">Change Password</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link toDisableAnchorTag" href="" onclick="displayCloseAccountModal(event, '{{request.user.id}}')">Close Account</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link toDisableAnchorTag" href="{% url 'authentication:logout' %}">Logout</a>
-                        </li>
-                        {% endif %}
-                    </ul>
-                </div>
-            </div>
-        </nav>
+        {% include "authentication/header.html" %}
         {% if messages %}
-        <ul class="messages list-unstyled text-center m-0 p-0">
+        <ul class="messages list-unstyled text-center">
             {% for message in messages %}
-            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            <li{% if message.tags %} class="{{ message.tags }} text-success fs-4"{% endif %}>{{ message }}</li>
             {% endfor %}
         </ul>
         {% endif %}

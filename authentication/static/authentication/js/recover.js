@@ -1,26 +1,24 @@
 function displayRecoverModal(event) {
     event.preventDefault();
-    const details_template = Handlebars.compile(document.querySelector('#recoverFormHandlebars').innerHTML);
+    const details_template = Handlebars.compile(document.querySelector('#recoverModalHandlebars').innerHTML);
     const details = details_template();
-    document.querySelector("#recoverModal").innerHTML = details;
+    document.querySelector("#recoverModalDiv").innerHTML = details;
+    document.querySelector("#recoverModalBtn").click();
 
-    const recoverModal = document.getElementById('recoverModal');
-    const recoverEmail = document.getElementById('recoverEmail');
+    const recoverModal = document.getElementById('recoverModal')
+    const recoverFormInputText = document.getElementById('recoverFormInputText')
     recoverModal.addEventListener('shown.bs.modal', () => {
-        recoverEmail.focus();
+        recoverFormInputText.focus()
     })
-
-    document.querySelector("#displayRevoverModal").click();
-    return false;
 }
 
 
 function recover(event) {
     event.preventDefault();
-    let email = document.querySelector("#recoverEmail").value.replace(/^\s+|\s+$/g, '');
+    let email = document.querySelector("#recoverFormInputText").value.replace(/^\s+|\s+$/g, '');
     if (!email) {
         document.querySelector("#recoverError").innerHTML = "Incomplete Form";
-        document.getElementById('recoverEmail').focus();
+        document.getElementById('recoverFormInputText').focus();
         return false;
     }
 
@@ -29,19 +27,19 @@ function recover(event) {
     request.open('POST', '/authentication/recover/');
     request.setRequestHeader("X-CSRFToken", csrftoken);
     
-    disable_buttons();
+    disable();
     prevent_default = true;
 
     request.onload = () => {
         const res = JSON.parse(request.responseText);
         if (res.success) {
-            enable_buttons();
+            enable();
             document.querySelector("#recoverModalCloseButton").click();
-            displayRecoverVerificationModal(res.data);
+            displayRecoverVerificationModal(res.email, res.validity);
         } else {
             prevent_default = false;
-            enable_buttons();
-            document.getElementById('recoverEmail').focus();
+            enable();
+            document.getElementById('recoverFormInputText').focus();
             document.querySelector("#recoverError").innerHTML = res.message;
         }
     };
@@ -52,29 +50,30 @@ function recover(event) {
     return false;
 }
 
-function displayRecoverVerificationModal(data) {
-    const details_template = Handlebars.compile(document.querySelector('#recoverVerifyHandlebars').innerHTML);
-    const details = details_template({"data": data});
-    document.querySelector("#recoverVerificationModal").innerHTML = details;
 
-    const recoverVerificationModal = document.getElementById('recoverVerificationModal');
-    const recoverVerifyCode = document.getElementById('recoverVerifyCode');
-    recoverVerificationModal.addEventListener('shown.bs.modal', () => {
-        recoverVerifyCode.focus();
+function displayRecoverVerificationModal(email, validity) {
+    const details_template = Handlebars.compile(document.querySelector('#verifyRecoveryEmailModalHandlebars').innerHTML);
+    const details = details_template({"email": email});
+    document.querySelector("#verifyRecoveryEmailModalDiv").innerHTML = details;
+    document.querySelector("#recoveryEmailVerificationModalBtn").click();
+    start_countdown(validity, "recover_countdown");
+
+    const recoveryEmailVerificationModal = document.getElementById('recoveryEmailVerificationModal')
+    const verifyRecoveryEmailCodeInput = document.getElementById('verifyRecoveryEmailCodeInput')
+    recoveryEmailVerificationModal.addEventListener('shown.bs.modal', () => {
+        verifyRecoveryEmailCodeInput.focus()
     })
-
-    document.querySelector("#recoverVerificationModalButton").click();
-    return;
 }
 
 
-function cancelrecoverVerify() {
+function cancelRecovery() {
     const request = new XMLHttpRequest();
     request.open('GET', '/authentication/recover/verify/cancel/');
     
     request.onload = () => {
         const res = JSON.parse(request.responseText);
         if (res.success) {
+            clearInterval(countDownTimer);
             prevent_default = false;
         }
     };
@@ -83,22 +82,25 @@ function cancelrecoverVerify() {
 }
 
 
-function recoverVerifyCodeResend(event) {
+function resendVerificationCode_recover(event) {
     event.preventDefault();
     const request = new XMLHttpRequest();
-    request.open('GET', '/authentication/recover/verify/resend/');
-    disable_buttons();
+    request.open('GET', '/authentication/recover/verify/resend-code/');
+    disable();
     request.onload = () => {
         const res = JSON.parse(request.responseText);
         if (res.success) {
-            enable_buttons();
-            document.getElementById('recoverVerifyCode').focus();
-            document.querySelector("#recoverVerifyError").innerHTML = "A new verification code was sent to your email address.";
+            enable();
+            clearInterval(countDownTimer);
+            start_countdown(res.validity, "recover_countdown");
+            document.getElementById('verifyRecoveryEmailCodeInput').focus();
+            document.querySelector("#verifyRecoveryError").innerHTML = "A new verification code was sent to your email address.";
         } else {
             prevent_default = false;
-            enable_buttons();
-            document.getElementById('recoverVerifyCode').focus();
-            document.querySelector("#recoverVerifyError").innerHTML = res.message;
+            enable();
+            clearInterval(countDownTimer);
+            document.getElementById('verifyRecoveryEmailCodeInput').focus();
+            document.querySelector("#verifyRecoveryError").innerHTML = res.message;
         }
     };
     request.send();
@@ -106,12 +108,12 @@ function recoverVerifyCodeResend(event) {
 }
 
 
-function recoverVerify(event) {
+function verifyRecoveryEmail(event) {
     event.preventDefault();
-    let code = document.querySelector("#recoverVerifyCode").value.replace(/^\s+|\s+$/g, '');
+    let code = document.querySelector("#verifyRecoveryEmailCodeInput").value.replace(/^\s+|\s+$/g, '');
     if (!code) {
-        document.querySelector("#recoverVerifyError").innerHTML = "Incomplete Form";
-        document.getElementById('recoverVerifyCode').focus();
+        document.querySelector("#verifyRecoveryError").innerHTML = "Incomplete Form";
+        document.getElementById('verifyRecoveryEmailCodeInput').focus();
         return false;
     }
 
@@ -120,19 +122,20 @@ function recoverVerify(event) {
     request.open('POST', '/authentication/recover/verify/');
     request.setRequestHeader("X-CSRFToken", csrftoken);
 
-    disable_buttons();
+    disable();
     request.onload = () => {
         const res = JSON.parse(request.responseText);
         if (res.success) {
-            enable_buttons();
-            document.querySelector("#recoverVerificationModalCloseButton").disabled = false;
-            document.querySelector("#recoverVerificationModalCloseButton").click();
-            document.querySelector("#recoverVerificationModalCloseButton").disabled = true;
+            enable();
+            clearInterval(countDownTimer);
+            document.querySelector("#closeBtn_VerifyRecoveryModal").disabled = false;
+            document.querySelector("#closeBtn_VerifyRecoveryModal").click();
+            document.querySelector("#closeBtn_VerifyRecoveryModal").disabled = true;
             displayChangePasswordModal();
         } else {
-            enable_buttons();
-            recoverVerifyCode.focus();
-            document.querySelector("#recoverVerifyError").innerHTML = res.message;
+            enable();
+            document.querySelector("#verifyRecoveryError").innerHTML = res.message;
+            document.getElementById('verifyRecoveryEmailCodeInput').focus();
         }
     };
 
@@ -146,16 +149,14 @@ function recoverVerify(event) {
 function displayChangePasswordModal() {
     const details_template = Handlebars.compile(document.querySelector('#changePasswordHandlebars').innerHTML);
     const details = details_template();
-    document.querySelector("#changePasswordModal").innerHTML = details;
-
-    const changePasswordModal = document.getElementById('changePasswordModal');
-    const recoverChangePassword = document.getElementById('recoverChangePassword');
-    changePasswordModal.addEventListener('shown.bs.modal', () => {
-        recoverChangePassword.focus();
-    })
-
+    document.querySelector("#passwordChangeModalDiv").innerHTML = details;
     document.querySelector("#changePasswordModalButton").click();
-    return;
+
+    const changePasswordModal = document.getElementById('changePasswordModal')
+    const recoverChangePassword = document.getElementById('recoverChangePassword')
+    changePasswordModal.addEventListener('shown.bs.modal', () => {
+        recoverChangePassword.focus()
+    })
 }
 
 
@@ -178,14 +179,14 @@ function changepassword(event) {
 
     const csrftoken = getCookie('csrftoken');
     const request = new XMLHttpRequest();
-    request.open('POST', '/authentication/recover/verify/changepassword/');
+    request.open('POST', '/authentication/recover/verify/change-password/');
     request.setRequestHeader("X-CSRFToken", csrftoken);
 
-    disable_buttons();
+    disable();
     request.onload = () => {
         const res = JSON.parse(request.responseText);
         if (res.success) {
-            enable_buttons();
+            enable();
             prevent_default = false;
             document.querySelector("#changePasswordModalCloseButton").disabled = false;
             document.querySelector("#changePasswordModalCloseButton").click();

@@ -1,48 +1,53 @@
-{% extends 'authentication/layout.html' %}
+{% extends "authentication/layout.html" %}
 {% load static %}
+
 
 {% block title %}Login{% endblock %}
 {% block style %}{% endblock %}
 
+
 {% block body %}
-{% include 'authentication/modals/register.html' %}
-{% include 'authentication/modals/recover.html' %}
-<div class="container my-5 text-center">
-    <h4>Login</h4><hr>
+<div class="container text-center my-5">
     <div class="row">
         <div class="col-sm-1 col-md-2 col-lg-3 col-xl-4"></div>
         <div class="col-sm-10 col-md-8 col-lg-6 col-xl-4">
-            <div class="card text-center bg-white text-dark border-dark" style="width: 100%;">
+            <div class="card mb-3" style="width: 100%;">
                 <div class="card-body">
-                    <form class="mb-3" onsubmit="login(event);">
-                        <div class="mb-3">
-                            <label for="loginInputEmail" class="form-label">Email / Username</label>
-                            <input type="text" class="form-control toDisable" id="loginInputEmail" autofocus placeholder="email address or username">
-                        </div>
-                        <div class="mb-3">
-                            <label for="loginInputPassword" class="form-label">Password</label>
-                            <input type="password" class="form-control toDisable" id="loginInputPassword" placeholder="********">
-                        </div>
-                        <button type="submit" class="btn btn-transparent-dark toDisable w-100 mt-4">
-                            Login
-                            <span class="spinner-border spinner-border-sm text-dark" role="status" aria-hidden="true" hidden></span>
-                        </button>
-                    </form>
-                    <a href="" class="card-link link-dark toDisableAnchorTag" onclick="displayRegisterModal(event);">Register</a>
-                    <a href="" class="card-link link-dark toDisableAnchorTag" onclick="displayRecoverModal(event);">Recover</a>
+                    <h5 class="card-title">Login</h5>
+                    <p class="card-text">
+                        <form onsubmit="login(event);">
+                            <div class="mb-3">
+                                <label for="loginInputEmail" class="form-label"><span class="requirement">*</span>Email / Username</label>
+                                <input type="text" class="form-control disableButton" id="loginInputEmail" placeholder="email address or username" autofocus>
+                            </div>
+                            <div class="mb-3">
+                                <label for="loginInputPassword" class="form-label"><span class="requirement">*</span>Password</label>
+                                <input type="password" class="form-control disableButton" id="loginInputPassword" placeholder="**********">
+                            </div>
+                            <button type="submit" class="btn btn-outline-dark disableButton w-100 mt-4">
+                                <span class="spinner-border spinner-border-sm text-dark" role="status" aria-hidden="true" hidden></span>
+                                Submit
+                            </button>
+                        </form>
+                    </p>
+                    <a href="" onclick="displayRegisterModal(event);" class="card-link link-danger-dark disableAnchorTag">Register</a>
+                    <a href="" onclick="displayRecoverModal(event);" class="card-link link-danger-dark disableAnchorTag">Recover</a>
                 </div>
             </div>
-            <div class="errormessage mt-2" id="loginError"></div>
+            <div class="errormessage" id="loginError"></div>
         </div>
         <div class="col-sm-1 col-md-2 col-lg-3 col-xl-4"></div>
     </div>
+    {% include "authentication/modals/register.html" %}
+    {% include "authentication/modals/recover.html" %}
 </div>
 {% endblock %}
 
 
-
 {% block script %}
 <script src="{% static 'authentication/js/login.js' %}"></script>
+<script src="{% static 'authentication/js/register.js' %}"></script>
+<script src="{% static 'authentication/js/recover.js' %}"></script>
 {% include 'authentication/handlebars/register.html' %}
 {% include 'authentication/handlebars/recover.html' %}
 {% endblock %}

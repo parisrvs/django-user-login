@@ -1,85 +1,62 @@
 <div style="display: none;">
-    <!-- add address Button trigger modal -->
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAddressModal" id="displayAddAddressModalButton">
-        launch add address modal
+    <!-- update account details Button trigger modal -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editAccountDetailsModal" id="editAccountDetailsModalBtn">
+        Launch static backdrop modal
     </button>
 
-    <!-- edit address Button trigger modal -->
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editAddressModal" id="triggerEditAddressModalBtn">
-        launch edit address modal
+    <!-- update email Button trigger modal -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editEmailModal" id="editEmailModalBtn">
+        Launch static backdrop modal
     </button>
 
-    <!-- edit personal details Button trigger modal -->
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editPersonalDetailsModal" id="triggerEditPersonalDetailsModalBtn">
-        launch edit address modal
+    <!-- update email verification code Button trigger modal -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editEmailVerificationModal" id="editEmailVerificationModalBtn">
+        Launch static backdrop modal
     </button>
 
-    <!-- confirm password Button trigger modal -->
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editEmailModal" id="triggereditEmailModalBtn">
-        launch edit address modal
+    <!-- change password button trigger modal  -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#changePasswordModal" id="changePasswordModalBtn">
+        Launch static backdrop modal
     </button>
 
-    <!-- edit email verify Button trigger modal -->
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editEmailVerifyModal" id="triggereditEditEmailVerifyModalBtn">
-        launch edit address modal
+    <!-- change password success button trigger modal -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#changePasswordSuccessModal" id="changePasswordSuccessModalBtn">
+        Launch static backdrop modal
     </button>
 
-    <!-- update Password Button trigger modal -->
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updatePasswordModal" id="updatePasswordModalButton">
-        launch edit address modal
+    <!-- close account button trigger modal -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#closeAccountModal" id="closeAccountModalBtn">
+        Launch static backdrop modal
     </button>
 
-    <!-- Button trigger recover Success modal -->
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updatePasswordSuccessModal" id="updatePasswordSuccessModalButton">
-        Recover Success
-    </button>
-
-    <!-- Button trigger close account modal -->
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#accountCloseModal" id="closeAccountModalButton">
-        Recover Success
+    <!-- close account verification button trigger modal -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#closeAccountVerificationModal" id="closeAccountVerificationModalBtn">
+        Launch static backdrop modal
     </button>
 </div>
-
-<!-- Account close Modal -->
-<div class="modal fade" id="accountCloseModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="accountCloseModalLabel" aria-hidden="true"></div>
-
-
-<!-- update password verify Modal -->
-<div class="modal fade" id="updatePasswordModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="updatePasswordModalLabel" aria-hidden="true"></div>
-
-<!-- edit email verify Modal -->
-<div class="modal fade" id="editEmailVerifyModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="editEmailVerifyModalLabel" aria-hidden="true"></div>
-
-
-<!-- edit personal details Modal -->
-<div class="modal fade" id="editPersonalDetailsModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="editPersonalDetailsModalLabel" aria-hidden="true"></div>
-
-
-<!-- add address Modal -->
-<div class="modal fade" id="addAddressModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="addAddressModalLabel" aria-hidden="true"></div>
-
-
-<!-- edit address Modal -->
-<div class="modal fade" id="editAddressModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="editAddressModalLabel" aria-hidden="true"></div>
-
-
-<!-- confirm password Modal -->
-<div class="modal fade" id="editEmailModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="editEmailModalLabel" aria-hidden="true"></div>
+  
+<!-- update account details Modal -->
+<div id="editAccountDetailsModalDiv"></div>
+<div id="editEmailModalDiv"></div>
+<div id="verifyEditEmailModalDiv"></div>
+<div id="changePasswordModalDiv"></div>
+<div id="closeAccountModalDiv"></div>
+<div id="closeAccountVerificationModalDiv"></div>
 
 
 <!-- Change Password Success Modal -->
-<div class="modal fade" id="updatePasswordSuccessModal" tabindex="-1" aria-labelledby="updatePasswordSuccessModalLabel" aria-hidden="true">
+<div class="modal fade" id="changePasswordSuccessModal" tabindex="-1" aria-labelledby="changePasswordSuccessModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
         <div class="modal-header">
-            <h5 class="modal-title" id="updatePasswordSuccessModalLabel">Update Password Successful</h5>
+            <h5 class="modal-title" id="changePasswordSuccessModalLabel">Request Successful</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body text-center">
             You have successfully changed your password.
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-transparent-dark btn-sm" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-outline-dark btn-sm" data-bs-dismiss="modal">Close</button>
         </div>
         </div>
     </div>
