@@ -26,12 +26,12 @@ jobs:
         --wheel
         --outdir dist/
         .
-    # - name: Publish distribution 📦 to Test PyPI
-    #   #if: startsWith(github.ref, 'refs/tags')
-    #   uses: pypa/gh-action-pypi-publish@master
-    #   with:
-    #     password: ${{ secrets.DJANGO_USER_LOGIN_TEST }}
-    #     repository_url: https://test.pypi.org/legacy/
+    - name: Publish distribution 📦 to Test PyPI
+      #if: startsWith(github.ref, 'refs/tags')
+      uses: pypa/gh-action-pypi-publish@master
+      with:
+        password: ${{ secrets.DJANGO_USER_LOGIN_TEST }}
+        repository_url: https://test.pypi.org/legacy/
     # - name: Publish distribution 📦 to PyPI
     #   #if: startsWith(github.ref, 'refs/tags')
     #   uses: pypa/gh-action-pypi-publish@master
